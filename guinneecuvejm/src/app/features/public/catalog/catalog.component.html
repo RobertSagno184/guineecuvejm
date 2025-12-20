@@ -1,0 +1,24 @@
+<section class="public-section catalog">
+  <header class="section-header">
+    <h2>Catalogue des cuves plastiques</h2>
+    <p>Découvrez une sélection de cuves adaptées aux besoins des ménages, commerces et industries.</p>
+  </header>
+
+  <div class="product-grid">
+    <article class="product-card" *ngFor="let product of products">
+      <div class="product-header">
+        <h3>{{ product.name }}</h3>
+        <span class="product-category">{{ product.category }}</span>
+      </div>
+      <p class="product-description">{{ product.description }}</p>
+      <div class="product-meta">
+        <span class="product-price">{{ product.price | price }}</span>
+        <span class="product-stock">
+          {{ product.stock > 0 ? (product.stock + ' en stock') : 'Rupture de stock' }}
+        </span>
+      </div>
+    </article>
+  </div>
+</section>
+
+

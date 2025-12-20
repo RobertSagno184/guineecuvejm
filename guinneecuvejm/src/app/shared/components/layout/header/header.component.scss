@@ -1,0 +1,95 @@
+@import 'app/shared/styles/variables.scss';
+
+.app-header {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 2rem;
+  padding-left: 2rem;
+  border-left: 1px solid $border-color;
+}
+
+.btn-register,
+.btn-login {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-register {
+  background-color: $primary-color;
+  color: white;
+}
+
+.btn-register:hover {
+  background-color: $primary-color-hover;
+}
+
+.btn-login {
+  color: $primary-color;
+  border: 1px solid $primary-color;
+}
+
+.btn-login:hover {
+  background-color: $hover-bg-primary;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 2rem;
+  padding-left: 2rem;
+  border-left: 1px solid $border-color;
+}
+
+.user-info {
+  color: $muted-text-color;
+  font-size: 0.9rem;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-dashboard {
+  padding: 0.5rem 1rem;
+  background-color: $primary-color;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-dashboard:hover {
+  background-color: $primary-color-hover;
+}
+
+.btn-logout {
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  color: $muted-text-color;
+  border: 1px solid $border-color-light;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background-color: $hover-bg-light;
+  color: $text-color;
+}
+

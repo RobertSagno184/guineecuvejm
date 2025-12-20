@@ -1,0 +1,27 @@
+<section class="public-section contact">
+  <header class="section-header">
+    <h2>Contactez-nous</h2>
+    <p>Une question sur nos cuves ou notre solution de gestion ? Envoyez-nous un message.</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="contact-form">
+    <div class="form-field">
+      <label>Nom complet</label>
+      <input type="text" formControlName="name" />
+    </div>
+
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" formControlName="email" />
+    </div>
+
+    <div class="form-field">
+      <label>Message</label>
+      <textarea rows="4" formControlName="message"></textarea>
+    </div>
+
+    <app-button type="submit" variant="primary">Envoyer</app-button>
+  </form>
+</section>
+
+

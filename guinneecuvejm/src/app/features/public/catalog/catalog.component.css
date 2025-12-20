@@ -1,0 +1,56 @@
+.public-section.catalog {
+  margin-top: 1rem;
+}
+
+.section-header h2 {
+  margin-bottom: 0.5rem;
+}
+
+.product-grid {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.product-card {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.product-category {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.product-description {
+  margin: 0.5rem 0 1rem;
+}
+
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.product-price {
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .product-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+

@@ -1,0 +1,60 @@
+<app-header></app-header>
+
+<main class="public-home">
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Stockez l’eau en toute sécurité avec Guinée Cuve Plastique</h1>
+      <p>
+        Catalogue complet de cuves plastiques, suivi des stocks en temps réel
+        et gestion des commandes pour les clients et les distributeurs.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/public/catalog" class="btn btn-primary">Voir le catalogue</a>
+        <a routerLink="/auth/register" class="btn btn-secondary hero-secondary">Créer un compte client</a>
+      </div>
+      <div class="hero-admin-actions">
+        <p class="admin-label">Accès gestion :</p>
+        <a routerLink="/auth/login" [queryParams]="{type: 'admin'}" class="btn-link">Administrateur</a>
+        <span class="separator">|</span>
+        <a routerLink="/auth/login" [queryParams]="{type: 'gérant'}" class="btn-link">Gérant</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <strong>+500</strong>
+          <span>Cuves livrées</span>
+        </div>
+        <div>
+          <strong>24h</strong>
+          <span>Réponse garantie</span>
+        </div>
+        <div>
+          <strong>Guinée</strong>
+          <span>Couverture nationale</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <h2>Gestion simplifiée</h2>
+        <p>Visualisez vos stocks, vos commandes et vos meilleures ventes sur un seul écran.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <article class="feature-card">
+      <h3>Catalogue détaillé</h3>
+      <p>Capacité, dimensions, photos et fiches techniques pour chaque cuve.</p>
+    </article>
+    <article class="feature-card">
+      <h3>Suivi des commandes</h3>
+      <p>Historique, statuts en temps réel et notifications pour vos clients.</p>
+    </article>
+    <article class="feature-card">
+      <h3>Alertes de stock</h3>
+      <p>Soyez notifié avant la rupture pour anticiper vos réapprovisionnements.</p>
+    </article>
+  </section>
+</main>
+
+

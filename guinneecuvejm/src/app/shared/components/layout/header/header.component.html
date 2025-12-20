@@ -1,0 +1,26 @@
+<header class="app-header">
+  <div class="logo">
+    <a routerLink="/">Guinée Cuve Plastique</a>
+  </div>
+  <nav class="nav-links">
+    <a routerLink="/public/catalog">Catalogue</a>
+    <a routerLink="/public/about">À propos</a>
+    <a routerLink="/public/contact">Contact</a>
+    
+    <div class="auth-links" *ngIf="!isAuthenticated()">
+      <a routerLink="/auth/register" class="btn-register">Créer un compte</a>
+      <a routerLink="/auth/login" class="btn-login">Se connecter</a>
+    </div>
+    
+    <div class="user-menu" *ngIf="isAuthenticated()">
+      <span class="user-info">{{ user()?.email }}</span>
+      <div class="user-actions">
+        <a *ngIf="role() === 'client'" routerLink="/client" class="btn-dashboard">Mon espace</a>
+        <a *ngIf="role() === 'admin' || role() === 'gérant'" routerLink="/admin" class="btn-dashboard">Administration</a>
+        <button (click)="logout()" class="btn-logout">Déconnexion</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+

@@ -1,0 +1,67 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family-base;
+  background-color: $bg-color;
+  color: $text-color;
+}
+
+.btn {
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background-color: $primary-color;
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: $secondary-color;
+  color: #fff;
+}
+
+.btn-danger {
+  background-color: $danger-color;
+  color: #fff;
+}
+
+.app-header {
+  @include flex-center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: $surface-color;
+  border-bottom: 1px solid $border-color;
+}
+
+.app-header .logo a {
+  font-weight: 600;
+  color: $primary-color;
+  text-decoration: none;
+}
+
+.app-header .nav-links a {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  color: $muted-text-color;
+  font-size: 0.95rem;
+}
+
+.app-header .nav-links a:hover {
+  color: $primary-color;
+}
+
+
