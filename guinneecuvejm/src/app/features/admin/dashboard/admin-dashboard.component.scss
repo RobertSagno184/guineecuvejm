@@ -1,0 +1,90 @@
+@use '../../../../assets/styles/_variables' as *;
+
+.dashboard-page {
+    padding: 15px;
+    background-color: $bg-color;
+    font-family: $font-family-base;
+}
+
+.dashboard-statistics {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    gap: 15px; /* Espacement entre les cartes */
+}
+
+.stat-card {
+    flex: 1 1 calc(33.333% - 20px); /* 3 cartes par ligne */
+    padding: 15px;
+    background-color: $surface-color;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.maLigne {
+    display: flex;
+    align-items: center;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card i {
+    font-size: 24px;
+    color: $primary-color;
+    margin-right: 20px;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 16px;
+    color: $text-color-secondary;
+}
+
+.stat-card p {
+    font-size: 14px;
+    color: $primary-color;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 24px;
+    color: $text-color;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.dashboard-chart {
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 20px;
+    background-color: $surface-color;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-chart h3 {
+    font-size: 20px;
+    color: $text-color;
+    margin-bottom: 20px;
+}
+
+canvas {
+    width: 100% !important;
+    height: 320px !important;
+    border-radius: 5px;
+    background-color: $surface-color;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    display: block;
+}
+
+canvas:hover {
+    background-color: $hover-bg-light;
+}
+

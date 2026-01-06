@@ -1,4 +1,4 @@
-@import 'app/shared/styles/variables.scss';
+@import '../../../../assets/styles/_variables';
 
 .register-container {
   min-height: 100vh;
@@ -16,12 +16,13 @@
   width: 100%;
   max-width: 480px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-top: 3px solid $primary-color;
 }
 
 h1 {
   margin: 0 0 0.5rem 0;
   font-size: 1.75rem;
-  color: $text-color;
+  color: $primary-color;
   font-weight: 600;
 }
 
@@ -47,6 +48,12 @@ label {
   font-weight: 500;
   color: $text-color-secondary;
   font-size: 0.9rem;
+
+  .optional {
+    color: $muted-text-color;
+    font-weight: 400;
+    font-size: 0.85rem;
+  }
 }
 
 input {
@@ -114,20 +121,21 @@ input.error {
   color: $primary-color;
   text-decoration: none;
   font-weight: 500;
+  transition: all 0.2s;
 }
 
 .register-footer a:hover {
+  color: $primary-color-dark;
   text-decoration: underline;
 }
 
-.admin-link {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid $border-color-divider;
-}
-
-.admin-link a {
-  color: $muted-text-color;
-  font-size: 0.85rem;
+.error-alert {
+  padding: 0.75rem;
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 6px;
+  color: #c33;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
 

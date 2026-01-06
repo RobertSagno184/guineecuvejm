@@ -1,125 +1,196 @@
-@import 'app/shared/styles/variables.scss';
+@use '../../../../assets/styles/_variables' as *;
 
-.public-home {
-  padding: 3rem 2rem 4rem;
+.hero-section {
+  margin-bottom: 4rem;
 }
 
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  gap: 2.5rem;
-  align-items: center;
-  margin-bottom: 3rem;
-}
-
-.hero-content h1 {
-  font-size: clamp(2rem, 3vw, 2.6rem);
-  margin-bottom: 1rem;
-}
-
-.hero-content p {
-  margin: 0;
-  max-width: 32rem;
-}
-
-.hero-actions {
-  margin-top: 1.75rem;
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.hero-secondary {
-  background-color: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: inherit;
-}
-
-.hero-admin-actions {
-  margin-top: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.admin-label {
-  margin: 0;
-  color: $muted-text-color;
-  font-size: 0.9rem;
-}
-
-.btn-link {
-  color: $primary-color;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: color 0.2s;
-}
-
-.btn-link:hover {
-  color: $primary-color-hover;
-  text-decoration: underline;
-}
-
-.separator {
-  color: $border-color-light;
-  font-size: 0.9rem;
-}
-
-.hero-stats {
-  margin-top: 2rem;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.hero-stats strong {
-  display: block;
-  font-size: 1.3rem;
-}
-
-.hero-visual {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.hero-card {
-  background: linear-gradient(135deg, rgba(11, 132, 255, 0.1), $surface-color);
-  border-radius: 1rem;
-  padding: 1.75rem;
-  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.15);
-}
-
-.hero-card h2 {
-  margin-top: 0;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-
-.feature-card {
+.intro-section {
+  padding: 4rem 0;
   background: $surface-color;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
 }
 
-@media (max-width: 900px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.intro-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: $primary-color;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: $primary-color;
+      border-radius: 2px;
+    }
   }
 
-  .hero-visual {
-    justify-content: flex-start;
-  }
-
-  .features {
-    grid-template-columns: minmax(0, 1fr);
+  .intro-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: $text-color-secondary;
+    margin-bottom: 1.5rem;
   }
 }
 
+.featured-products-section {
+  padding: 4rem 0;
+  background: $bg-color;
+}
+
+.values-section {
+  padding: 4rem 0;
+  background: $surface-color;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $primary-color;
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: $primary-color;
+    border-radius: 2px;
+  }
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.value-card {
+  text-align: center;
+  padding: 2rem;
+  background: $surface-color;
+  border-radius: 12px;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: $primary-color;
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-color: $primary-color-light;
+
+    &::before {
+      transform: scaleX(1);
+    }
+
+    .value-icon {
+      transform: scale(1.1);
+    }
+  }
+
+  .value-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: $primary-color;
+    transition: transform 0.3s;
+    display: inline-block;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-color;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: $text-color-secondary;
+    line-height: 1.6;
+  }
+}
+
+.testimonials-section {
+  padding: 4rem 0;
+  background: $bg-color;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.testimonials-cta {
+  text-align: center;
+  margin-top: 2rem;
+
+  .view-all-testimonials {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $primary-color-hover;
+    }
+  }
+}
+
+.cta-section {
+  padding: 4rem 0;
+}
+
+@media (max-width: 768px) {
+  .intro-content h2,
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+}

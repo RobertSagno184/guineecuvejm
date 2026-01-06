@@ -1,0 +1,225 @@
+<div class="product-detail-page">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Chargement du produit...</p>
+  </div>
+
+  <!-- Product Content -->
+  <div class="product-detail-content" *ngIf="!isLoading() && product()">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/client/catalogue">Catalogue</a>
+      <span class="separator">/</span>
+      <span class="current">{{ product()!.name }}</span>
+    </nav>
+
+    <div class="product-main">
+      <!-- Image Gallery -->
+      <div class="product-gallery">
+        <!-- Main Image -->
+        <div class="main-image-container">
+          <button 
+            class="nav-button prev" 
+            *ngIf="product()!.images.length > 1"
+            (click)="previousImage()"
+            aria-label="Image précédente"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          <div class="main-image-wrapper">
+            <app-cloudinary-image
+              *ngIf="product()!.images[selectedImageIndex()]"
+              [src]="product()!.images[selectedImageIndex()]"
+              [alt]="product()!.name"
+              [width]="800"
+              [height]="800"
+              [lazy]="false"
+              class="main-image"
+            ></app-cloudinary-image>
+            <div class="image-placeholder" *ngIf="!product()!.images || product()!.images.length === 0">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <p>Aucune image disponible</p>
+            </div>
+          </div>
+
+          <button 
+            class="nav-button next" 
+            *ngIf="product()!.images.length > 1"
+            (click)="nextImage()"
+            aria-label="Image suivante"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+
+          <!-- Image Counter -->
+          <div class="image-counter" *ngIf="product()!.images.length > 1">
+            {{ selectedImageIndex() + 1 }} / {{ product()!.images.length }}
+          </div>
+        </div>
+
+        <!-- Thumbnail Gallery -->
+        <div class="thumbnail-gallery" *ngIf="product()!.images.length > 1">
+          <button
+            *ngFor="let image of product()!.images; let i = index"
+            class="thumbnail"
+            [class.active]="selectedImageIndex() === i"
+            (click)="selectImage(i)"
+            [attr.aria-label]="'Voir l\'image ' + (i + 1)"
+          >
+            <app-cloudinary-image
+              [src]="image"
+              [alt]="product()!.name + ' - Image ' + (i + 1)"
+              [width]="100"
+              [height]="100"
+              [lazy]="true"
+            ></app-cloudinary-image>
+          </button>
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <!-- Header -->
+        <div class="product-header">
+          <div class="category-badge" [attr.data-category]="product()!.category">
+            {{ getCategoryLabel(product()!.category) }}
+          </div>
+          <h1>{{ product()!.name }}</h1>
+          <div class="product-meta">
+            <span class="price">{{ product()!.price | price }}</span>
+            <span class="stock-badge" [class]="'stock-' + getStockStatus()">
+              <span *ngIf="getStockStatus() === 'out-of-stock'">Épuisé</span>
+              <span *ngIf="getStockStatus() === 'low-stock'">Stock faible ({{ product()!.stock }} unités)</span>
+              <span *ngIf="getStockStatus() === 'in-stock'">En stock ({{ product()!.stock }} unités)</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="product-description">
+          <h2>Description</h2>
+          <p>{{ product()!.description }}</p>
+        </div>
+
+        <!-- Specifications -->
+        <div class="product-specifications">
+          <h2>Spécifications techniques</h2>
+          <div class="specs-grid">
+            <div class="spec-item">
+              <span class="spec-label">Capacité</span>
+              <span class="spec-value">{{ product()!.capacity }}L</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Hauteur</span>
+              <span class="spec-value">{{ product()!.specifications.height }} cm</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Diamètre</span>
+              <span class="spec-value">{{ product()!.specifications.diameter }} cm</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Poids</span>
+              <span class="spec-value">{{ product()!.specifications.weight }} kg</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Couleur</span>
+              <span class="spec-value">{{ product()!.specifications.color }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="product-actions">
+          <!-- Quantity Selector -->
+          <div class="quantity-selector" *ngIf="getStockStatus() !== 'out-of-stock'">
+            <label>Quantité</label>
+            <div class="quantity-controls">
+              <button 
+                class="qty-btn" 
+                (click)="decreaseQuantity()"
+                [disabled]="quantity() <= 1"
+                aria-label="Diminuer la quantité"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+              <input
+                type="number"
+                [value]="quantity()"
+                (input)="onQuantityChange($event)"
+                min="1"
+                [max]="product()!.stock"
+                class="quantity-input"
+                aria-label="Quantité"
+              />
+              <button 
+                class="qty-btn" 
+                (click)="increaseQuantity()"
+                [disabled]="quantity() >= product()!.stock"
+                aria-label="Augmenter la quantité"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            <span class="stock-info">Stock disponible: {{ product()!.stock }} unités</span>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button 
+              class="btn-primary btn-add-to-cart"
+              (click)="addToCart()"
+              [disabled]="getStockStatus() === 'out-of-stock'"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              Ajouter au panier
+            </button>
+            
+            <button 
+              class="btn-secondary btn-favorite"
+              (click)="toggleFavorite()"
+              [class.active]="isFavorite()"
+              [attr.aria-label]="isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+
+            <button 
+              class="btn-secondary btn-quote"
+              (click)="requestQuote()"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              Demander un devis
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

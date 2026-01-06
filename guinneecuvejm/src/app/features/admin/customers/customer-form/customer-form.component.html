@@ -1,0 +1,171 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="customer-form">
+  <div class="form-header">
+    <h1>{{ isEditMode() ? 'Modifier le client' : 'Nouveau client' }}</h1>
+    <button class="btn-secondary" (click)="cancel()" type="button">
+      <i class="fas fa-times"></i> Annuler
+    </button>
+  </div>
+
+  <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading(); else loading">
+    <div class="form-grid">
+      <!-- Informations générales -->
+      <div class="form-section">
+        <h2>Informations générales</h2>
+        
+        <div class="form-group">
+          <label for="companyName">Entreprise / Nom *</label>
+          <input
+            id="companyName"
+            type="text"
+            formControlName="companyName"
+            class="form-input"
+            [class.error]="customerForm.get('companyName')?.invalid && customerForm.get('companyName')?.touched"
+            placeholder="Nom de l'entreprise ou du client"
+          />
+          <div class="error-message" *ngIf="customerForm.get('companyName')?.invalid && customerForm.get('companyName')?.touched">
+            Le nom est requis (minimum 2 caractères)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="contactPerson">Personne de contact *</label>
+          <input
+            id="contactPerson"
+            type="text"
+            formControlName="contactPerson"
+            class="form-input"
+            [class.error]="customerForm.get('contactPerson')?.invalid && customerForm.get('contactPerson')?.touched"
+            placeholder="Nom de la personne de contact"
+          />
+          <div class="error-message" *ngIf="customerForm.get('contactPerson')?.invalid && customerForm.get('contactPerson')?.touched">
+            Le contact est requis (minimum 2 caractères)
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              [class.error]="customerForm.get('email')?.invalid && customerForm.get('email')?.touched"
+              placeholder="email@exemple.com"
+            />
+            <div class="error-message" *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched">
+              Email invalide
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Téléphone *</label>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              class="form-input"
+              [class.error]="customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched"
+              placeholder="+224 XXX XXX XXX"
+            />
+            <div class="error-message" *ngIf="customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched">
+              Téléphone invalide
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="type">Type de client *</label>
+          <select
+            id="type"
+            formControlName="type"
+            class="form-input"
+          >
+            <option value="particulier">Particulier</option>
+            <option value="professionnel">Professionnel</option>
+            <option value="revendeur">Revendeur</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-section">
+        <h2>Adresse</h2>
+        
+        <div formGroupName="address">
+          <div class="form-group">
+            <label for="street">Quartier *</label>
+            <input
+              id="street"
+              type="text"
+              formControlName="street"
+              class="form-input"
+              [class.error]="customerForm.get('address.street')?.invalid && customerForm.get('address.street')?.touched"
+              placeholder="Nom du quartier"
+            />
+            <div class="error-message" *ngIf="customerForm.get('address.street')?.invalid && customerForm.get('address.street')?.touched">
+              Le quartier est requis
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">Ville *</label>
+              <input
+                id="city"
+                type="text"
+                formControlName="city"
+                class="form-input"
+                [class.error]="customerForm.get('address.city')?.invalid && customerForm.get('address.city')?.touched"
+                placeholder="Nom de la ville"
+              />
+              <div class="error-message" *ngIf="customerForm.get('address.city')?.invalid && customerForm.get('address.city')?.touched">
+                La ville est requise
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="country">Pays *</label>
+              <input
+                id="country"
+                type="text"
+                formControlName="country"
+                class="form-input"
+                [class.error]="customerForm.get('address.country')?.invalid && customerForm.get('address.country')?.touched"
+                placeholder="Pays"
+              />
+              <div class="error-message" *ngIf="customerForm.get('address.country')?.invalid && customerForm.get('address.country')?.touched">
+                Le pays est requis
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="cancel()">
+        <i class="fas fa-times"></i> Annuler
+      </button>
+      <button 
+        type="submit" 
+        class="btn-save" 
+        [disabled]="customerForm.invalid || isSaving()"
+      >
+        <i class="fas fa-save"></i>
+        <span *ngIf="!isSaving()">{{ isEditMode() ? 'Enregistrer les modifications' : 'Créer le client' }}</span>
+        <span *ngIf="isSaving()">Enregistrement en cours...</span>
+      </button>
+    </div>
+  </form>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement des informations du client...</p>
+    </div>
+  </ng-template>
+</div>
+

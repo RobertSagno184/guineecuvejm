@@ -1,0 +1,31 @@
+.legal-page {
+  padding: 2rem 0 4rem;
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .legal-content {
+    section {
+      margin-bottom: 2rem;
+
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        line-height: 1.8;
+        color: #555;
+      }
+    }
+  }
+}
+

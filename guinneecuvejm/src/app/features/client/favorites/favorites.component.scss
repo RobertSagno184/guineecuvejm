@@ -1,0 +1,252 @@
+.favorites-page {
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.favorites-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+  }
+
+  .favorites-count {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #f5f9ff;
+    border-radius: 12px;
+    color: #2196f3;
+    font-weight: 600;
+    font-size: 14px;
+
+    svg {
+      fill: #2196f3;
+      stroke: none;
+    }
+  }
+}
+
+// Loading State
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #2196f3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .empty-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #f5f9ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    color: #2196f3;
+  }
+
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  p {
+    margin: 0 0 32px 0;
+    color: #666;
+    font-size: 16px;
+    max-width: 400px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #2196f3;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #1976d2;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    }
+  }
+}
+
+// Stock Alerts
+.stock-alerts {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 12px;
+
+  .alert-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    svg {
+      color: #f57c00;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #f57c00;
+    }
+  }
+
+  .alert-products {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .alert-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: #fff;
+    border-radius: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .product-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .stock-info {
+      padding: 4px 12px;
+      background: #ffc107;
+      color: #333;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+
+      &.out-of-stock {
+        background: #f44336;
+        color: #fff;
+      }
+    }
+  }
+}
+
+// Products Grid
+.favorites-content {
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .product-wrapper {
+    position: relative;
+
+    .btn-remove-favorite {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #f44336;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background: #fff;
+        border-color: #f44336;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+      }
+
+      svg {
+        fill: #f44336;
+        stroke: none;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .favorites-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+    gap: 16px !important;
+  }
+}
+

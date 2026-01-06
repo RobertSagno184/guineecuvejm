@@ -1,0 +1,172 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="order-detail" *ngIf="!isLoading() && order(); else loading">
+  <div class="detail-header">
+    <button class="btn-back" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Retour
+    </button>
+    <div class="header-content">
+      <h1>Commande {{ order()!.orderNumber }}</h1>
+      <div class="header-actions">
+        <button class="btn-action" (click)="generateInvoicePDF()" title="Télécharger facture PDF">
+          <i class="fas fa-file-pdf"></i> Facture PDF
+        </button>
+        <button class="btn-action" (click)="generateOrderFormPDF()" title="Télécharger bon de commande PDF">
+          <i class="fas fa-file-alt"></i> Bon de commande
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <!-- Informations client -->
+    <div class="detail-section" *ngIf="customer()">
+      <h2>Informations du client</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Numéro client</label>
+          <span class="customer-id">
+            <a [routerLink]="['/admin/customers', customer()!.id]" class="customer-link">
+              {{ customer()!.id }}
+            </a>
+          </span>
+        </div>
+        <div class="info-item">
+          <label>Nom / Entreprise</label>
+          <span>
+            <a [routerLink]="['/admin/customers', customer()!.id]" class="customer-link">
+              {{ customer()!.companyName }}
+            </a>
+          </span>
+        </div>
+        <div class="info-item">
+          <label>Contact</label>
+          <span>{{ customer()!.contactPerson }}</span>
+        </div>
+        <div class="info-item">
+          <label>Email</label>
+          <a [href]="'mailto:' + customer()!.email" class="email-link">
+            {{ customer()!.email }}
+          </a>
+        </div>
+        <div class="info-item">
+          <label>Téléphone</label>
+          <a [href]="'tel:' + customer()!.phone" class="phone-link">
+            {{ customer()!.phone }}
+          </a>
+        </div>
+        <div class="info-item">
+          <label>Type</label>
+          <span class="type-badge" [class]="'type-' + customer()!.type">
+            {{ getTypeLabel(customer()!.type) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h2>Informations de la commande</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Statut</label>
+          <div class="status-control">
+            <span class="status-badge" [class]="'status-' + order()!.status">
+              {{ getStatusLabel(order()!.status) }}
+            </span>
+            <select
+              [value]="order()!.status"
+              (change)="updateStatus($any($event.target).value)"
+              class="status-select"
+              title="Changer le statut"
+            >
+              <option value="pending">En attente</option>
+              <option value="processing">En traitement</option>
+              <option value="shipped">Expédiée</option>
+              <option value="delivered">Livrée</option>
+              <option value="cancelled">Annulée</option>
+            </select>
+          </div>
+        </div>
+        <div class="info-item">
+          <label>Date</label>
+          <span>{{ formatDate(order()!.createdAt) }}</span>
+        </div>
+        <div class="info-item">
+          <label>Méthode de paiement</label>
+          <span>{{ getPaymentMethodLabel(order()!.paymentMethod) }}</span>
+        </div>
+        <div class="info-item">
+          <label>Numéro de commande</label>
+          <span class="order-number">{{ order()!.orderNumber }}</span>
+        </div>
+        <div class="info-item" *ngIf="order()!.cancellationReason">
+          <label>Raison d'annulation</label>
+          <span class="cancellation-reason">{{ order()!.cancellationReason }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historique des modifications -->
+    <div class="detail-section" *ngIf="order()!.statusHistory && order()!.statusHistory!.length > 0">
+      <h2>Historique des modifications</h2>
+      <div class="history-timeline">
+        <div class="history-item" *ngFor="let history of order()!.statusHistory">
+          <div class="history-dot"></div>
+          <div class="history-content">
+            <div class="history-header">
+              <span class="history-status" [class]="'status-' + history.status">
+                {{ getStatusLabel(history.status) }}
+              </span>
+              <span class="history-date">{{ formatDate(history.changedAt) }}</span>
+            </div>
+            <div class="history-details" *ngIf="history.reason || history.notes">
+              <p *ngIf="history.reason"><strong>Raison:</strong> {{ history.reason }}</p>
+              <p *ngIf="history.notes">{{ history.notes }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h2>Articles</h2>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Prix unitaire</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order()!.items">
+            <td>{{ item.productName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ formatCurrency(item.unitPrice) }}</td>
+            <td>{{ formatCurrency(item.totalPrice) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="detail-section">
+      <div class="totals">
+        <div class="total-row total">
+          <span>Total</span>
+          <span>{{ formatCurrency(order()!.total) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section" *ngIf="order()!.notes">
+      <h2>Notes</h2>
+      <p>{{ order()!.notes }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-state">Chargement...</div>
+</ng-template>
+

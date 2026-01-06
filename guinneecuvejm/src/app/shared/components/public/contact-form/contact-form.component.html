@@ -1,0 +1,93 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="contact-form">
+  <div class="form-group">
+    <label for="name">Nom complet *</label>
+    <input 
+      type="text" 
+      id="name" 
+      formControlName="name"
+      [class.error]="form.get('name')?.invalid && form.get('name')?.touched"
+    >
+    <span class="error-message" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+      {{ getFieldError('name') }}
+    </span>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="email">Email *</label>
+      <input 
+        type="email" 
+        id="email" 
+        formControlName="email"
+        [class.error]="form.get('email')?.invalid && form.get('email')?.touched"
+      >
+      <span class="error-message" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        {{ getFieldError('email') }}
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Téléphone *</label>
+      <input 
+        type="tel" 
+        id="phone" 
+        formControlName="phone"
+        [class.error]="form.get('phone')?.invalid && form.get('phone')?.touched"
+      >
+      <span class="error-message" *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched">
+        {{ getFieldError('phone') }}
+      </span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="company">Entreprise</label>
+    <input type="text" id="company" formControlName="company">
+  </div>
+
+  <div class="form-group">
+    <label for="subject">Sujet *</label>
+    <input 
+      type="text" 
+      id="subject" 
+      formControlName="subject"
+      [class.error]="form.get('subject')?.invalid && form.get('subject')?.touched"
+    >
+    <span class="error-message" *ngIf="form.get('subject')?.invalid && form.get('subject')?.touched">
+      {{ getFieldError('subject') }}
+    </span>
+  </div>
+
+  <div class="form-group">
+    <label for="message">Message *</label>
+    <textarea 
+      id="message" 
+      formControlName="message"
+      rows="6"
+      [class.error]="form.get('message')?.invalid && form.get('message')?.touched"
+    ></textarea>
+    <span class="error-message" *ngIf="form.get('message')?.invalid && form.get('message')?.touched">
+      {{ getFieldError('message') }}
+    </span>
+  </div>
+
+  <div class="form-actions">
+    <button 
+      type="submit" 
+      class="btn-submit"
+      [disabled]="isSubmitting() || form.invalid"
+    >
+      <span *ngIf="!isSubmitting()">Envoyer</span>
+      <span *ngIf="isSubmitting()">Envoi en cours...</span>
+    </button>
+  </div>
+
+  <div class="form-message success" *ngIf="isSuccess()">
+    ✓ Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.
+  </div>
+
+  <div class="form-message error" *ngIf="error()">
+    ✗ {{ error() }}
+  </div>
+</form>
+

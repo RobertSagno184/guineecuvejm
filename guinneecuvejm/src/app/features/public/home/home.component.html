@@ -1,60 +1,92 @@
-<app-header></app-header>
+<!-- Hero Section -->
+<section class="hero-section">
+  <app-hero-slider [slides]="heroSlides"></app-hero-slider>
+</section>
 
-<main class="public-home">
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Stockez l’eau en toute sécurité avec Guinée Cuve Plastique</h1>
-      <p>
-        Catalogue complet de cuves plastiques, suivi des stocks en temps réel
-        et gestion des commandes pour les clients et les distributeurs.
+<!-- Présentation Entreprise -->
+<section class="intro-section">
+  <div class="container">
+    <div class="intro-content">
+      <h2>Guinée Cuve Plastique</h2>
+      <p class="intro-text">
+        Depuis plus de 10 ans, Guinée Cuve Plastique est votre partenaire de confiance 
+        pour le stockage d'eau. Nous proposons une large gamme de cuves plastique de qualité, 
+        adaptées à tous vos besoins : particuliers, entreprises, agriculture, industrie.
       </p>
-      <div class="hero-actions">
-        <a routerLink="/public/catalog" class="btn btn-primary">Voir le catalogue</a>
-        <a routerLink="/auth/register" class="btn btn-secondary hero-secondary">Créer un compte client</a>
+      <p class="intro-text">
+        Notre engagement : qualité, durabilité et service client irréprochable. 
+        Chaque produit est soigneusement sélectionné pour garantir une performance optimale 
+        et une longue durée de vie.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Produits Phares -->
+<section class="featured-products-section">
+  <app-product-showcase 
+    [products]="featuredProducts"
+    title="Nos produits phares"
+    [showViewAll]="true"
+  ></app-product-showcase>
+</section>
+
+<!-- Valeurs Entreprise -->
+<section class="values-section">
+  <div class="container">
+    <h2 class="section-title">Nos valeurs</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">✓</div>
+        <h3>Qualité</h3>
+        <p>Des produits certifiés et testés pour garantir une performance optimale et une longue durée de vie.</p>
       </div>
-      <div class="hero-admin-actions">
-        <p class="admin-label">Accès gestion :</p>
-        <a routerLink="/auth/login" [queryParams]="{type: 'admin'}" class="btn-link">Administrateur</a>
-        <span class="separator">|</span>
-        <a routerLink="/auth/login" [queryParams]="{type: 'gérant'}" class="btn-link">Gérant</a>
+      <div class="value-card">
+        <div class="value-icon">🛡️</div>
+        <h3>Durabilité</h3>
+        <p>Matériaux résistants aux UV et aux intempéries pour un stockage sécurisé dans le temps.</p>
       </div>
-      <div class="hero-stats">
-        <div>
-          <strong>+500</strong>
-          <span>Cuves livrées</span>
-        </div>
-        <div>
-          <strong>24h</strong>
-          <span>Réponse garantie</span>
-        </div>
-        <div>
-          <strong>Guinée</strong>
-          <span>Couverture nationale</span>
-        </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>Service</h3>
+        <p>Une équipe à votre écoute pour vous conseiller et vous accompagner dans votre projet.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🚚</div>
+        <h3>Livraison</h3>
+        <p>Livraison sur mesure partout en Guinée avec installation professionnelle disponible.</p>
       </div>
     </div>
-    <div class="hero-visual">
-      <div class="hero-card">
-        <h2>Gestion simplifiée</h2>
-        <p>Visualisez vos stocks, vos commandes et vos meilleures ventes sur un seul écran.</p>
-      </div>
+  </div>
+</section>
+
+<!-- Témoignages -->
+<section class="testimonials-section" *ngIf="testimonials.length > 0">
+  <div class="container">
+    <h2 class="section-title">Ce que disent nos clients</h2>
+    <div class="testimonials-grid">
+      <app-testimonial-card
+        *ngFor="let testimonial of testimonials"
+        [testimonial]="testimonial"
+      ></app-testimonial-card>
     </div>
-  </section>
+    <div class="testimonials-cta">
+      <a routerLink="/public/testimonials" class="view-all-testimonials">
+        Voir tous les témoignages →
+      </a>
+    </div>
+  </div>
+</section>
 
-  <section class="features">
-    <article class="feature-card">
-      <h3>Catalogue détaillé</h3>
-      <p>Capacité, dimensions, photos et fiches techniques pour chaque cuve.</p>
-    </article>
-    <article class="feature-card">
-      <h3>Suivi des commandes</h3>
-      <p>Historique, statuts en temps réel et notifications pour vos clients.</p>
-    </article>
-    <article class="feature-card">
-      <h3>Alertes de stock</h3>
-      <p>Soyez notifié avant la rupture pour anticiper vos réapprovisionnements.</p>
-    </article>
-  </section>
-</main>
-
-
+<!-- Call to Action -->
+<section class="cta-section">
+  <app-call-to-action
+    title="Prêt à trouver la cuve idéale ?"
+    description="Contactez-nous dès aujourd'hui pour discuter de vos besoins et recevoir un devis personnalisé."
+    primaryText="Nous contacter"
+    primaryLink="/public/contact"
+    secondaryText="Voir le catalogue"
+    secondaryLink="/public/catalog"
+    variant="primary"
+  ></app-call-to-action>
+</section>

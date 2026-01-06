@@ -1,0 +1,87 @@
+@use '../../../../../assets/styles/_variables' as *;
+
+.cta-section {
+  padding: 4rem 2rem;
+  text-align: center;
+
+  &.cta-default {
+    background: $bg-color;
+  }
+
+  &.cta-primary {
+    background: linear-gradient(135deg, $primary-color 0%, $primary-color-dark 100%);
+    color: #fff;
+  }
+
+  &.cta-secondary {
+    background: $text-color;
+    color: #fff;
+  }
+}
+
+.cta-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.cta-description {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+}
+
+.cta-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  padding: 1rem 2.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-block;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.cta-primary {
+  background: $primary-color;
+  color: #fff;
+
+  &:hover {
+    background: $primary-color-hover;
+  }
+}
+
+.cta-secondary {
+  background: transparent;
+  border: 2px solid currentColor;
+  color: inherit;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+

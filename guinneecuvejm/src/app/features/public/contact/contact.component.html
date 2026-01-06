@@ -1,27 +1,61 @@
-<section class="public-section contact">
-  <header class="section-header">
-    <h2>Contactez-nous</h2>
-    <p>Une question sur nos cuves ou notre solution de gestion ? Envoyez-nous un message.</p>
-  </header>
+<div class="contact-page">
+  <div class="container">
+    <header class="page-header">
+      <h1>Contactez-nous</h1>
+      <p>Une question ? Un projet ? N'hésitez pas à nous contacter. Notre équipe vous répondra dans les plus brefs délais.</p>
+    </header>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="contact-form">
-    <div class="form-field">
-      <label>Nom complet</label>
-      <input type="text" formControlName="name" />
+    <div class="contact-grid">
+      <!-- Formulaire -->
+      <div class="contact-form-section">
+        <h2>Envoyez-nous un message</h2>
+        <app-contact-form></app-contact-form>
+      </div>
+
+      <!-- Informations de contact -->
+      <div class="contact-info-section">
+        <h2>Nos coordonnées</h2>
+        
+        <div class="contact-info">
+          <div class="info-item">
+            <div class="info-icon">📍</div>
+            <div>
+              <strong>Adresse</strong>
+              <p>Conakry, Guinée</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">📞</div>
+            <div>
+              <strong>Téléphone</strong>
+              <p>+224 XXX XXX XXX</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">✉️</div>
+            <div>
+              <strong>Email</strong>
+              <p>contact@guineecuveplastique.com</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon">🕒</div>
+            <div>
+              <strong>Horaires</strong>
+              <p>Lundi - Vendredi: 8h - 18h<br>Samedi: 9h - 13h</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-box">
+          <h3>Besoin d'une réponse rapide ?</h3>
+          <p>Appelez-nous directement</p>
+          <a href="tel:+224XXXXXXXXX" class="btn-call">Appeler maintenant</a>
+        </div>
+      </div>
     </div>
-
-    <div class="form-field">
-      <label>Email</label>
-      <input type="email" formControlName="email" />
-    </div>
-
-    <div class="form-field">
-      <label>Message</label>
-      <textarea rows="4" formControlName="message"></textarea>
-    </div>
-
-    <app-button type="submit" variant="primary">Envoyer</app-button>
-  </form>
-</section>
-
-
+  </div>
+</div>

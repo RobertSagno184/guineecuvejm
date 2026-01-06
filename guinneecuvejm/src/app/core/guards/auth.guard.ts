@@ -1,11 +1,20 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { AuthState } from '../services/auth/auth.state';
+import { map } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-// Simple placeholder implementation; à adapter avec la vraie logique d'auth
 export const authGuard: CanActivateFn = (route, state) => {
-  // TODO: inject AuthService via inject() et vérifier l'état d'authentification
-  console.warn('authGuard utilisé sans logique réelle, à implémenter.');
-  return true;
+  const authState = inject(AuthState);
+  const router = inject(Router);
+
+  if (authState.isAuthenticated()) {
+    return true;
+  }
+
+  // Rediriger vers la page de connexion avec l'URL de retour
+  router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
+  return false;
 };
 
 

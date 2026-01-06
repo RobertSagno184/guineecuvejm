@@ -1,0 +1,53 @@
+<div class="hero-slider">
+  <div class="slides-container">
+    <div 
+      *ngFor="let slide of slides(); let i = index"
+      class="slide"
+      [class.active]="currentSlide() === i"
+      [style.background-image]="'url(' + slide.image + ')'"
+    >
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <h1 class="slide-title">{{ slide.title }}</h1>
+        <p class="slide-subtitle" *ngIf="slide.subtitle">{{ slide.subtitle }}</p>
+        <a 
+          *ngIf="slide.ctaText && slide.ctaLink"
+          [routerLink]="slide.ctaLink"
+          class="cta-button"
+        >
+          {{ slide.ctaText }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <button 
+    *ngIf="slides().length > 1"
+    class="nav-button prev"
+    (click)="prevSlide()"
+    aria-label="Slide précédent"
+  >
+    ‹
+  </button>
+  <button 
+    *ngIf="slides().length > 1"
+    class="nav-button next"
+    (click)="nextSlide()"
+    aria-label="Slide suivant"
+  >
+    ›
+  </button>
+
+  <!-- Indicators -->
+  <div *ngIf="slides().length > 1" class="indicators">
+    <button
+      *ngFor="let slide of slides(); let i = index"
+      class="indicator"
+      [class.active]="currentSlide() === i"
+      (click)="goToSlide(i)"
+      [attr.aria-label]="'Aller au slide ' + (i + 1)"
+    ></button>
+  </div>
+</div>
+

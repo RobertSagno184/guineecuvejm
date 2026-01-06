@@ -1,0 +1,22 @@
+<div class="testimonials-page">
+  <div class="container">
+    <header class="page-header">
+      <h1>Témoignages de nos clients</h1>
+      <p>Découvrez ce que nos clients disent de nos produits et services</p>
+    </header>
+
+    <div class="testimonials-grid">
+      <app-testimonial-card
+        *ngFor="let testimonial of testimonials"
+        [testimonial]="testimonial"
+      ></app-testimonial-card>
+    </div>
+
+    <section class="cta-section">
+      <h2>Rejoignez nos clients satisfaits</h2>
+      <p>Découvrez notre catalogue et trouvez la cuve adaptée à vos besoins</p>
+      <a routerLink="/public/catalog" class="btn-cta">Voir le catalogue</a>
+    </section>
+  </div>
+</div>
+

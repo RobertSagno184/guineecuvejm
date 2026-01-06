@@ -1,0 +1,76 @@
+<div class="public-product-card">
+  <div class="product-image-wrapper">
+    <a [routerLink]="['/public/catalog', product().id]" class="product-image-link">
+      <img
+        [src]="product().mainImage || '/assets/images/placeholder-product.jpg'"
+        [alt]="product().name"
+        class="product-image"
+        loading="lazy"
+      >
+      <div class="product-overlay">
+        <span class="view-details">Voir détails</span>
+      </div>
+    </a>
+    
+    <div class="product-badges">
+      <span class="badge category-badge" [attr.data-category]="product().category">
+        {{ getCategoryLabel(product().category) }}
+      </span>
+      <span class="badge availability-badge" [class.available]="product().isAvailable" [class.unavailable]="!product().isAvailable">
+        <span *ngIf="product().isAvailable">En stock</span>
+        <span *ngIf="!product().isAvailable">Sur commande</span>
+      </span>
+      <span class="badge featured-badge" *ngIf="product().isFeatured">
+        ⭐ Phare
+      </span>
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h3 class="product-name">
+      <a [routerLink]="['/public/catalog', product().id]">{{ product().name }}</a>
+    </h3>
+    
+    <p class="product-description" *ngIf="product().description">
+      {{ product().description }}
+    </p>
+
+    <div class="product-specs">
+      <span class="spec-item" *ngIf="product().capacity">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        </svg>
+        {{ product().capacity }}L
+      </span>
+      <span class="spec-item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        </svg>
+        {{ product().specifications.dimensions }}
+      </span>
+    </div>
+
+    <div class="product-features" *ngIf="product().features.length > 0">
+      <ul>
+        <li *ngFor="let feature of product().features.slice(0, 3)">{{ feature }}</li>
+      </ul>
+    </div>
+
+    <div class="product-footer">
+      <a 
+        [routerLink]="['/public/catalog', product().id]"
+        class="btn-view-details"
+      >
+        Voir détails
+      </a>
+      <a 
+        routerLink="/public/contact"
+        [queryParams]="{ product: product().id }"
+        class="btn-contact"
+      >
+        Demander info
+      </a>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,81 @@
+<div class="favorites-page">
+  <div class="favorites-header">
+    <div>
+      <h1>Mes Favoris</h1>
+      <p class="subtitle">Vos produits préférés en un seul endroit</p>
+    </div>
+    <div class="favorites-count" *ngIf="!isEmpty()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+      <span>{{ favoriteProducts().length }} produit(s)</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Chargement de vos favoris...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading() && isEmpty()">
+    <div class="empty-icon">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+    </div>
+    <h2>Aucun favori pour le moment</h2>
+    <p>Commencez à ajouter des produits à vos favoris depuis le catalogue</p>
+    <a routerLink="/client/catalogue" class="btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="M21 21l-4.35-4.35"></path>
+      </svg>
+      Parcourir le catalogue
+    </a>
+  </div>
+
+  <!-- Favorites Grid -->
+  <div class="favorites-content" *ngIf="!isLoading() && !isEmpty()">
+    <!-- Stock Alerts -->
+    <div class="stock-alerts" *ngIf="hasLowStockProducts()">
+      <div class="alert-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <h3>Alertes de stock</h3>
+      </div>
+      <div class="alert-products">
+        <div class="alert-item" *ngFor="let product of getLowStockProducts()">
+          <span class="product-name">{{ product.name }}</span>
+          <span class="stock-info" [class.out-of-stock]="product.stock === 0">
+            {{ product.stock === 0 ? 'Rupture de stock' : `Stock faible: ${product.stock} unités` }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      <div class="product-wrapper" *ngFor="let product of favoriteProducts()">
+        <app-product-card
+          [product]="product"
+          [showAddToCart]="true"
+          [showFavorite]="false"
+          [showQuote]="true"
+          (addToCart)="onAddToCart($event)"
+          (requestQuote)="onRequestQuote($event)"
+        ></app-product-card>
+        <button class="btn-remove-favorite" (click)="onRemoveFromFavorites(product)" title="Retirer des favoris">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

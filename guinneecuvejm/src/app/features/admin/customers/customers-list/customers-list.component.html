@@ -1,0 +1,305 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="customers-list">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestion des clients</h1>
+      <p class="subtitle">Gérez tous vos clients et leurs informations</p>
+    </div>
+    <button class="btn-primary" (click)="router.navigate(['/admin/customers/new'])">
+      <i class="fas fa-plus"></i> Nouveau client
+    </button>
+  </div>
+
+  <!-- Statistiques globales -->
+  <div class="stats-section" *ngIf="!isLoading()">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats().total }}</div>
+        <div class="stat-label">Total clients</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats().totalOrders }}</div>
+        <div class="stat-label">Total commandes</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"></line>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats().totalSpent | price }}</div>
+        <div class="stat-label">Total dépensé</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats().professionnels + stats().revendeurs }}</div>
+        <div class="stat-label">Clients pro</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="search-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input
+        type="text"
+        placeholder="Rechercher un client (nom, email, téléphone)..."
+        [value]="searchTerm()"
+        (input)="onSearchChange($any($event.target).value)"
+        class="search-input"
+      />
+    </div>
+
+    <div class="filters-group">
+      <select 
+        [value]="selectedType()" 
+        (change)="onTypeFilterChange($any($event.target).value)"
+        class="filter-select"
+      >
+        <option value="all">Tous les types</option>
+        <option value="particulier">Particuliers</option>
+        <option value="professionnel">Professionnels</option>
+        <option value="revendeur">Revendeurs</option>
+      </select>
+
+      <select 
+        [value]="sortBy()" 
+        (change)="onSortChange($any($event.target).value)"
+        class="filter-select"
+      >
+        <option value="name">Trier par nom</option>
+        <option value="orders">Trier par commandes</option>
+        <option value="spent">Trier par dépenses</option>
+        <option value="date">Trier par date</option>
+      </select>
+
+      <button 
+        class="sort-order-btn"
+        (click)="sortOrder.set(sortOrder() === 'asc' ? 'desc' : 'asc')"
+        [title]="sortOrder() === 'asc' ? 'Tri croissant' : 'Tri décroissant'"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path *ngIf="sortOrder() === 'asc'" d="M3 6h18M7 12h10M11 18h2"></path>
+          <path *ngIf="sortOrder() === 'desc'" d="M3 18h18M7 12h10M11 6h2"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Actions en masse -->
+  <div class="bulk-actions" *ngIf="selectedCustomers().size > 0">
+    <span class="selected-count">{{ selectedCustomers().size }} client(s) sélectionné(s)</span>
+    <button class="btn-danger" (click)="deleteSelectedCustomers()" type="button">
+      <i class="fas fa-trash"></i> Supprimer sélection
+    </button>
+  </div>
+
+  <!-- Tableau des clients -->
+  <div class="customers-table-container" *ngIf="!isLoading(); else loading">
+    <!-- Compteur et pagination header -->
+    <div class="table-header">
+      <div class="results-info">
+        <span>{{ totalResults() }} résultat(s) trouvé(s)</span>
+      </div>
+      <div class="pagination-controls-top">
+        <label for="items-per-page">Afficher :</label>
+        <select
+          id="items-per-page"
+          [value]="itemsPerPage()"
+          (change)="onItemsPerPageChange(+$any($event.target).value)"
+          class="items-per-page-select"
+        >
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrapper" *ngIf="paginatedCustomers().length > 0; else noCustomers">
+      <table class="customers-table">
+        <thead>
+          <tr>
+            <th class="checkbox-column">
+              <input
+                type="checkbox"
+                [checked]="selectAll()"
+                (change)="toggleSelectAll()"
+                title="Sélectionner tout"
+              />
+            </th>
+            <th>Entreprise / Nom</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Type</th>
+            <th>Commandes</th>
+            <th>Total dépensé</th>
+            <th>Inscription</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of paginatedCustomers()" class="customer-row">
+            <td class="checkbox-column">
+              <input
+                type="checkbox"
+                [checked]="isCustomerSelected(customer.id)"
+                (change)="toggleCustomerSelection(customer.id)"
+              />
+            </td>
+            <td class="customer-name">
+              <div class="name-cell">
+                <strong>{{ customer.companyName }}</strong>
+              </div>
+            </td>
+            <td>{{ customer.contactPerson }}</td>
+            <td>
+              <a [href]="'mailto:' + customer.email" class="email-link">
+                {{ customer.email }}
+              </a>
+            </td>
+            <td>
+              <a [href]="'tel:' + customer.phone" class="phone-link">
+                {{ customer.phone }}
+              </a>
+            </td>
+            <td>
+              <span class="type-badge" [class]="'type-' + customer.type">
+                {{ getTypeLabel(customer.type) }}
+              </span>
+            </td>
+            <td class="orders-count">
+              <span class="count-badge" [class.has-orders]="customer.totalOrders > 0">
+                {{ customer.totalOrders }}
+              </span>
+            </td>
+            <td class="price-cell">
+              <strong>{{ customer.totalSpent | price }}</strong>
+            </td>
+            <td class="date-cell">
+              {{ customer.createdAt | date:'shortDate':'fr-FR' }}
+            </td>
+            <td class="actions-cell">
+              <div class="action-buttons">
+                <button 
+                  class="btn-action btn-view"
+                  (click)="viewCustomer(customer.id)"
+                  title="Voir les détails"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button 
+                  class="btn-action btn-orders"
+                  (click)="viewCustomerOrders(customer.id)"
+                  title="Voir les commandes"
+                >
+                  <i class="fas fa-shopping-cart"></i>
+                </button>
+                <button 
+                  class="btn-action btn-delete"
+                  (click)="deleteCustomer(customer.id, customer.companyName)"
+                  title="Supprimer"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noCustomers>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <h3>Aucun client trouvé</h3>
+        <p *ngIf="searchTerm() || selectedType() !== 'all'">
+          Aucun client ne correspond à vos critères de recherche.
+        </p>
+        <p *ngIf="!searchTerm() && selectedType() === 'all'">
+          Aucun client n'est encore enregistré dans le système.
+        </p>
+      </div>
+    </ng-template>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage() === 1"
+        (click)="onPageChange(currentPage() - 1)"
+        title="Page précédente"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      
+      <div class="pagination-pages">
+        <button
+          *ngFor="let page of getPageNumbers()"
+          class="pagination-btn"
+          [class.active]="page === currentPage()"
+          [class.ellipsis]="page === -1"
+          (click)="page !== -1 && onPageChange(page)"
+          [disabled]="page === -1"
+        >
+          {{ page === -1 ? '...' : page }}
+        </button>
+      </div>
+
+      <button
+        class="pagination-btn"
+        [disabled]="currentPage() === totalPages()"
+        (click)="onPageChange(currentPage() + 1)"
+        title="Page suivante"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement des clients...</p>
+    </div>
+  </ng-template>
+</div>

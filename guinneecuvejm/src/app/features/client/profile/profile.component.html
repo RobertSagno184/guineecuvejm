@@ -1,0 +1,586 @@
+<div class="profile-page">
+  <div class="profile-header">
+    <div class="header-content">
+      <h1>Mon Profil</h1>
+      <p class="subtitle">Gérez vos informations personnelles et préférences</p>
+    </div>
+    <div class="profile-avatar">
+      <div class="avatar-circle">
+        <span>{{ getInitials() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Chargement de votre profil...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div class="profile-content" *ngIf="!isLoading() && customer()">
+    <!-- Tabs -->
+    <div class="profile-tabs">
+      <button
+        class="tab-btn"
+        [class.active]="activeTab() === 'info'"
+        (click)="setActiveTab('info')"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        Informations
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab() === 'addresses'"
+        (click)="setActiveTab('addresses')"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        Adresses
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab() === 'password'"
+        (click)="setActiveTab('password')"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        Sécurité
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab() === 'activity'"
+        (click)="setActiveTab('activity')"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+        Activité
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Personal Information Tab -->
+      <div class="tab-panel" *ngIf="activeTab() === 'info'">
+        <section class="profile-section">
+          <div class="section-title">
+            <h2>Informations personnelles</h2>
+            <p class="section-description">Mettez à jour vos informations de contact</p>
+          </div>
+          <form [formGroup]="personalInfoForm" (ngSubmit)="savePersonalInfo()" class="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="companyName">
+                  Nom / Entreprise *
+                  <span class="required-indicator">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="companyName"
+                  formControlName="companyName"
+                  placeholder="Votre nom ou nom d'entreprise"
+                  [class.error]="personalInfoForm.get('companyName')?.invalid && personalInfoForm.get('companyName')?.touched"
+                />
+                <span class="error-message" *ngIf="personalInfoForm.get('companyName')?.invalid && personalInfoForm.get('companyName')?.touched">
+                  Le nom est requis (minimum 2 caractères)
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label for="contactPerson">
+                  Personne de contact *
+                  <span class="required-indicator">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="contactPerson"
+                  formControlName="contactPerson"
+                  placeholder="Nom de la personne de contact"
+                  [class.error]="personalInfoForm.get('contactPerson')?.invalid && personalInfoForm.get('contactPerson')?.touched"
+                />
+                <span class="error-message" *ngIf="personalInfoForm.get('contactPerson')?.invalid && personalInfoForm.get('contactPerson')?.touched">
+                  Le nom de contact est requis (minimum 2 caractères)
+                </span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">
+                  Email *
+                  <span class="required-indicator">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  formControlName="email"
+                  placeholder="votre@email.com"
+                  [class.error]="personalInfoForm.get('email')?.invalid && personalInfoForm.get('email')?.touched"
+                  readonly
+                />
+                <span class="help-text">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  L'email ne peut pas être modifié
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label for="phone">
+                  Téléphone *
+                  <span class="required-indicator">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  formControlName="phone"
+                  placeholder="+224 XXX XXX XXX"
+                  [class.error]="personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched"
+                />
+                <span class="error-message" *ngIf="personalInfoForm.get('phone')?.invalid && personalInfoForm.get('phone')?.touched">
+                  Format de téléphone invalide
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="type">
+                Type de client *
+                <span class="required-indicator">*</span>
+              </label>
+              <select 
+                id="type" 
+                formControlName="type" 
+                [class.error]="personalInfoForm.get('type')?.invalid && personalInfoForm.get('type')?.touched"
+              >
+                <option value="particulier">Particulier</option>
+                <option value="professionnel">Professionnel</option>
+                <option value="revendeur">Revendeur</option>
+              </select>
+              <span class="help-text">Sélectionnez votre type de compte</span>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-save" [disabled]="personalInfoForm.invalid || isSaving()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!isSaving()">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                  <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                  <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                <span *ngIf="!isSaving()">Enregistrer les modifications</span>
+                <span *ngIf="isSaving()">Enregistrement en cours...</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Statistics -->
+        <section class="profile-section stats-section">
+          <div class="section-title">
+            <h2>Vos statistiques</h2>
+            <p class="section-description">Aperçu de votre activité</p>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card stat-primary">
+              <div class="stat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ customer()!.totalOrders }}</div>
+                <div class="stat-label">Total commandes</div>
+                <div class="stat-description">Toutes vos commandes</div>
+              </div>
+            </div>
+            <div class="stat-card stat-success">
+              <div class="stat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ customer()!.totalSpent | price }}</div>
+                <div class="stat-label">Total dépensé</div>
+                <div class="stat-description">Montant total de vos achats</div>
+              </div>
+            </div>
+            <div class="stat-card stat-info">
+              <div class="stat-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ getDaysSinceCreation() }}</div>
+                <div class="stat-label">Jours depuis l'inscription</div>
+                <div class="stat-description">Membre depuis {{ customer()!.createdAt | date:'MMMM yyyy':'fr-FR' }}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Addresses Tab -->
+      <div class="tab-panel" *ngIf="activeTab() === 'addresses'">
+        <section class="profile-section">
+          <div class="section-header">
+            <div class="section-title">
+              <h2>Adresses de livraison</h2>
+              <p class="section-description">Gérez vos adresses de livraison</p>
+            </div>
+            <button class="btn-add" (click)="toggleAddAddress()" *ngIf="!showAddAddress()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Ajouter une adresse
+            </button>
+          </div>
+
+          <!-- Add/Edit Address Form -->
+          <div class="address-form-container" *ngIf="showAddAddress()">
+            <div class="form-header">
+              <h3>{{ editingAddressId() ? 'Modifier l\'adresse' : 'Nouvelle adresse' }}</h3>
+              <button class="btn-close" (click)="cancelAddressForm()" type="button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <form [formGroup]="newAddressForm" (ngSubmit)="saveAddress()" class="address-form">
+              <div class="form-group">
+                <label for="label">
+                  Libellé de l'adresse *
+                  <span class="required-indicator">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="label"
+                  formControlName="label"
+                  placeholder="Ex: Domicile, Bureau, Entrepôt..."
+                  [class.error]="newAddressForm.get('label')?.invalid && newAddressForm.get('label')?.touched"
+                />
+                <span class="error-message" *ngIf="newAddressForm.get('label')?.invalid && newAddressForm.get('label')?.touched">
+                  Le libellé est requis
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label for="street">
+                  Rue et numéro *
+                  <span class="required-indicator">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="street"
+                  formControlName="street"
+                  placeholder="Rue, avenue, boulevard..."
+                  [class.error]="newAddressForm.get('street')?.invalid && newAddressForm.get('street')?.touched"
+                />
+                <span class="error-message" *ngIf="newAddressForm.get('street')?.invalid && newAddressForm.get('street')?.touched">
+                  L'adresse est requise
+                </span>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="city">
+                    Ville *
+                    <span class="required-indicator">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="city"
+                    formControlName="city"
+                    placeholder="Ville"
+                    [class.error]="newAddressForm.get('city')?.invalid && newAddressForm.get('city')?.touched"
+                  />
+                  <span class="error-message" *ngIf="newAddressForm.get('city')?.invalid && newAddressForm.get('city')?.touched">
+                    La ville est requise
+                  </span>
+                </div>
+
+                <div class="form-group">
+                  <label for="postalCode">Code postal</label>
+                  <input
+                    type="text"
+                    id="postalCode"
+                    formControlName="postalCode"
+                    placeholder="Code postal (optionnel)"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="country">
+                  Pays *
+                  <span class="required-indicator">*</span>
+                </label>
+                <select 
+                  id="country" 
+                  formControlName="country"
+                  [class.error]="newAddressForm.get('country')?.invalid && newAddressForm.get('country')?.touched"
+                >
+                  <option value="Guinée">Guinée</option>
+                  <option value="Guinée-Bissau">Guinée-Bissau</option>
+                  <option value="Guinée équatoriale">Guinée équatoriale</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" class="btn-cancel" (click)="cancelAddressForm()">
+                  Annuler
+                </button>
+                <button type="submit" class="btn-save" [disabled]="newAddressForm.invalid">
+                  {{ editingAddressId() ? 'Modifier' : 'Ajouter' }} l'adresse
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Addresses List -->
+          <div class="addresses-list" *ngIf="addresses().length > 0">
+            <div class="address-card" *ngFor="let address of addresses()" [class.default]="address.isDefault">
+              <div class="address-header">
+                <div class="address-title">
+                  <div class="address-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3>{{ address.label }}</h3>
+                    <span class="default-badge" *ngIf="address.isDefault">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      Par défaut
+                    </span>
+                  </div>
+                </div>
+                <div class="address-actions">
+                  <button 
+                    class="btn-icon" 
+                    title="Définir par défaut"
+                    (click)="setDefaultAddress(address.id)"
+                    *ngIf="!address.isDefault"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                  <button 
+                    class="btn-icon" 
+                    title="Modifier"
+                    (click)="editAddress(address)"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                  </button>
+                  <button 
+                    class="btn-icon btn-danger" 
+                    title="Supprimer" 
+                    (click)="deleteAddress(address.id)"
+                    *ngIf="!address.isDefault"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="address-content">
+                <p class="address-line">{{ address.street }}</p>
+                <p class="address-line">
+                  {{ address.city }}{{ address.postalCode ? ', ' + address.postalCode : '' }}, {{ address.country }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="addresses().length === 0 && !showAddAddress()">
+            <div class="empty-icon">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
+            <h3>Aucune adresse enregistrée</h3>
+            <p>Ajoutez votre première adresse de livraison pour faciliter vos commandes</p>
+            <button class="btn-primary" (click)="toggleAddAddress()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Ajouter une adresse
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Password Tab -->
+      <div class="tab-panel" *ngIf="activeTab() === 'password'">
+        <section class="profile-section">
+          <div class="section-title">
+            <h2>Changer le mot de passe</h2>
+            <p class="section-description">Mettez à jour votre mot de passe pour sécuriser votre compte</p>
+          </div>
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile-form">
+            <div class="form-group">
+              <label for="currentPassword">
+                Mot de passe actuel *
+                <span class="required-indicator">*</span>
+              </label>
+              <input
+                type="password"
+                id="currentPassword"
+                formControlName="currentPassword"
+                placeholder="Entrez votre mot de passe actuel"
+                [class.error]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched"
+              />
+              <span class="error-message" *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+                Le mot de passe actuel est requis
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword">
+                Nouveau mot de passe *
+                <span class="required-indicator">*</span>
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                formControlName="newPassword"
+                placeholder="Minimum 6 caractères"
+                [class.error]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched"
+              />
+              <span class="error-message" *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+                Le mot de passe doit contenir au moins 6 caractères
+              </span>
+              <span class="help-text">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Utilisez un mot de passe fort avec au moins 6 caractères
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">
+                Confirmer le nouveau mot de passe *
+                <span class="required-indicator">*</span>
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                placeholder="Confirmez votre nouveau mot de passe"
+                [class.error]="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched"
+              />
+              <span class="error-message" *ngIf="passwordForm.get('confirmPassword')?.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched">
+                Les mots de passe ne correspondent pas
+              </span>
+              <span class="error-message" *ngIf="passwordForm.get('confirmPassword')?.hasError('required') && passwordForm.get('confirmPassword')?.touched">
+                La confirmation est requise
+              </span>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-save" [disabled]="passwordForm.invalid || isChangingPassword()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!isChangingPassword()">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                  <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                  <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
+                <span *ngIf="!isChangingPassword()">Changer le mot de passe</span>
+                <span *ngIf="isChangingPassword()">Changement en cours...</span>
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- Activity Tab -->
+      <div class="tab-panel" *ngIf="activeTab() === 'activity'">
+        <section class="profile-section">
+          <div class="section-title">
+            <h2>Historique d'activité</h2>
+            <p class="section-description">Vos dernières actions et commandes</p>
+          </div>
+          <div class="activity-list" *ngIf="activityHistory().length > 0; else noActivity">
+            <div 
+              class="activity-item" 
+              *ngFor="let activity of activityHistory()"
+              [routerLink]="activity.orderId ? ['/client/commandes', activity.orderId] : null"
+              [class.clickable]="activity.orderId"
+            >
+              <div class="activity-icon" [class]="'icon-' + activity.type">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path [attr.d]="getActivityIcon(activity.type)"></path>
+                </svg>
+              </div>
+              <div class="activity-content">
+                <div class="activity-title">{{ activity.title }}</div>
+                <div class="activity-description">{{ activity.description }}</div>
+                <div class="activity-date">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  {{ activity.date | date:'longDate':'fr-FR' }} à {{ activity.date | date:'shortTime':'fr-FR' }}
+                </div>
+              </div>
+              <svg 
+                *ngIf="activity.orderId"
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2" 
+                class="activity-arrow"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </div>
+          <ng-template #noActivity>
+            <div class="empty-state">
+              <div class="empty-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+              </div>
+              <h3>Aucune activité récente</h3>
+              <p>Votre historique d'activité apparaîtra ici</p>
+            </div>
+          </ng-template>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

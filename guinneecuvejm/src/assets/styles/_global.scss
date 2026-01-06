@@ -27,16 +27,91 @@ body {
 .btn-primary {
   background-color: $primary-color;
   color: #fff;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $primary-color-hover;
+  }
+
+  &:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
 }
 
 .btn-secondary {
   background-color: $secondary-color;
   color: #fff;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $secondary-color-hover;
+  }
+
+  &:focus {
+    outline: 2px solid $secondary-color;
+    outline-offset: 2px;
+  }
+}
+
+.btn-accent {
+  background-color: $accent-color;
+  color: #fff;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $accent-color-hover;
+  }
+
+  &:focus {
+    outline: 2px solid $accent-color;
+    outline-offset: 2px;
+  }
+}
+
+.btn-success {
+  background-color: $success-color;
+  color: #fff;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $success-color-hover;
+  }
+
+  &:focus {
+    outline: 2px solid $success-color;
+    outline-offset: 2px;
+  }
+}
+
+.btn-alert {
+  background-color: $alert-color;
+  color: #fff;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $alert-color-hover;
+  }
+
+  &:focus {
+    outline: 2px solid $alert-color;
+    outline-offset: 2px;
+  }
 }
 
 .btn-danger {
-  background-color: $danger-color;
+  background-color: $error-color;
   color: #fff;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $error-color-hover;
+  }
+
+  &:focus {
+    outline: 2px solid $error-color;
+    outline-offset: 2px;
+  }
 }
 
 .app-header {
@@ -64,4 +139,96 @@ body {
   color: $primary-color;
 }
 
+// Classes utilitaires pour les états de stock
+.stock-ok {
+  color: $success-color;
+  background-color: rgba($success-color, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.stock-low {
+  color: $alert-color;
+  background-color: rgba($alert-color, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.stock-out {
+  color: $error-color;
+  background-color: rgba($error-color, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+// Classes utilitaires pour les textes
+.text-primary {
+  color: $primary-color;
+}
+
+.text-secondary {
+  color: $secondary-color;
+}
+
+.text-accent {
+  color: $accent-color;
+}
+
+.text-success {
+  color: $success-color;
+}
+
+.text-alert {
+  color: $alert-color;
+}
+
+.text-error {
+  color: $error-color;
+}
+
+.text-muted {
+  color: $muted-text-color;
+}
+
+// Classes utilitaires pour les fonds
+.bg-primary {
+  background-color: $primary-color;
+  color: #fff;
+}
+
+.bg-secondary {
+  background-color: $secondary-color;
+  color: #fff;
+}
+
+.bg-accent {
+  background-color: $accent-color;
+  color: #fff;
+}
+
+.bg-success {
+  background-color: $success-color;
+  color: #fff;
+}
+
+.bg-alert {
+  background-color: $alert-color;
+  color: #fff;
+}
+
+.bg-error {
+  background-color: $error-color;
+  color: #fff;
+}
+
+.bg-light {
+  background-color: $bg-color;
+}
+
+.bg-surface {
+  background-color: $surface-color;
+}
 

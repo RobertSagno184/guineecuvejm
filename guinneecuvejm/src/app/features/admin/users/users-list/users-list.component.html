@@ -1,0 +1,313 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="users-list">
+  <div class="page-header">
+    <div>
+      <h1>
+        <i class="fas fa-users"></i> Gestion des utilisateurs
+      </h1>
+      <p class="subtitle">Gérez les utilisateurs et leurs permissions</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary" (click)="createUser()">
+        <i class="fas fa-user-plus"></i> Nouvel utilisateur
+      </button>
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-section" *ngIf="!isLoading()">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(255, 152, 0, 0.1);">
+        <i class="fas fa-users" style="color: #ff9800;"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Total</h3>
+        <p class="stat-value">{{ stats().total }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(76, 175, 80, 0.1);">
+        <i class="fas fa-check-circle" style="color: #4caf50;"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Actifs</h3>
+        <p class="stat-value">{{ stats().active }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(244, 67, 54, 0.1);">
+        <i class="fas fa-times-circle" style="color: #f44336;"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Inactifs</h3>
+        <p class="stat-value">{{ stats().inactive }}</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(33, 150, 243, 0.1);">
+        <i class="fas fa-user-shield" style="color: #2196f3;"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Administrateurs</h3>
+        <p class="stat-value">{{ stats().byRole.admin }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="filters">
+      <div class="filter-group">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="text"
+            placeholder="Rechercher par email ou nom..."
+            [value]="searchTerm()"
+            (input)="onSearchChange($any($event.target).value)"
+            class="search-input"
+          />
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <select
+          [value]="selectedRole()"
+          (change)="onRoleChange($any($event.target).value)"
+          class="filter-select"
+        >
+          <option value="all">Tous les rôles</option>
+          <option value="admin">Administrateur</option>
+          <option value="gérant">Gérant</option>
+          <option value="client">Client</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select
+          [value]="statusFilter()"
+          (change)="onStatusFilterChange($any($event.target).value)"
+          class="filter-select"
+        >
+          <option value="all">Tous les statuts</option>
+          <option value="active">Actifs</option>
+          <option value="inactive">Inactifs</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-clear" (click)="clearFilters()" *ngIf="searchTerm() || selectedRole() !== 'all' || statusFilter() !== 'all'">
+          <i class="fas fa-times"></i> Réinitialiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions en masse -->
+  <div class="bulk-actions" *ngIf="selectedUsers().size > 0">
+    <div class="selected-count">
+      <i class="fas fa-check-square"></i>
+      {{ selectedUsers().size }} utilisateur(s) sélectionné(s)
+    </div>
+    <div class="bulk-buttons">
+      <select
+        (change)="updateSelectedUsersRole($any($event.target).value)"
+        class="role-select-bulk"
+        [value]="''"
+      >
+        <option value="" disabled>Modifier le rôle...</option>
+        <option value="admin">Administrateur</option>
+        <option value="gérant">Gérant</option>
+        <option value="client">Client</option>
+      </select>
+      <button class="btn-danger" (click)="deleteSelectedUsers()">
+        <i class="fas fa-trash"></i> Supprimer
+      </button>
+    </div>
+  </div>
+
+  <!-- Tableau -->
+  <div class="users-table-container" *ngIf="!isLoading(); else loading">
+    <div class="table-header">
+      <div class="results-count">
+        {{ filteredAndSortedUsers().length }} utilisateur(s) trouvé(s)
+      </div>
+      <div class="items-per-page">
+        <label>Afficher:</label>
+        <select
+          [value]="itemsPerPage()"
+          (change)="onItemsPerPageChange(+$any($event.target).value)"
+          class="items-select"
+        >
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </div>
+
+    <table class="users-table" *ngIf="paginatedUsers().length > 0; else noUsers">
+      <thead>
+        <tr>
+          <th class="checkbox-col">
+            <input
+              type="checkbox"
+              [checked]="selectAll()"
+              (change)="toggleSelectAll()"
+              class="checkbox-input"
+            />
+          </th>
+          <th (click)="onSort('email')" class="sortable">
+            <i class="fas" [ngClass]="getSortIcon('email')"></i> Email
+          </th>
+          <th (click)="onSort('displayName')" class="sortable">
+            <i class="fas" [ngClass]="getSortIcon('displayName')"></i> Nom
+          </th>
+          <th (click)="onSort('role')" class="sortable">
+            <i class="fas" [ngClass]="getSortIcon('role')"></i> Rôle
+          </th>
+          <th (click)="onSort('createdAt')" class="sortable">
+            <i class="fas" [ngClass]="getSortIcon('createdAt')"></i> Date de création
+          </th>
+          <th (click)="onSort('lastLoginAt')" class="sortable">
+            <i class="fas" [ngClass]="getSortIcon('lastLoginAt')"></i> Dernière connexion
+          </th>
+          <th>Statut</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of paginatedUsers()" [class.inactive]="user.isActive === false">
+          <td class="checkbox-col">
+            <input
+              type="checkbox"
+              [checked]="isUserSelected(user.id)"
+              (change)="toggleUserSelection(user.id)"
+              class="checkbox-input"
+            />
+          </td>
+          <td>
+            <div class="user-email">
+              <i class="fas fa-envelope"></i>
+              {{ user.email }}
+            </div>
+          </td>
+          <td>
+            <div class="user-name">
+              <i class="fas fa-user"></i>
+              {{ user.displayName || 'N/A' }}
+            </div>
+          </td>
+          <td>
+            <span class="role-badge" [class]="'role-' + user.role">
+              {{ getRoleLabel(user.role) }}
+            </span>
+          </td>
+          <td>{{ formatDate(user.createdAt) }}</td>
+          <td>{{ formatDate(user.lastLoginAt) }}</td>
+          <td>
+            <span class="status-badge" [class.active]="user.isActive !== false" [class.inactive]="user.isActive === false">
+              <i class="fas" [class.fa-check-circle]="user.isActive !== false" [class.fa-times-circle]="user.isActive === false"></i>
+              {{ user.isActive !== false ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td class="actions">
+            <div class="action-buttons">
+              <button
+                class="btn-action btn-view"
+                (click)="viewUser(user.id)"
+                title="Voir les détails"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+              <button
+                class="btn-action btn-edit"
+                (click)="editUser(user.id)"
+                title="Modifier"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              <select
+                [value]="user.role"
+                (change)="updateRole(user.id, $any($event.target).value)"
+                class="role-select-small"
+                title="Modifier le rôle"
+              >
+                <option value="admin">Admin</option>
+                <option value="gérant">Gérant</option>
+                <option value="client">Client</option>
+              </select>
+              <button
+                class="btn-action btn-toggle"
+                [class.active]="user.isActive !== false"
+                (click)="toggleUserActive(user.id)"
+                [title]="user.isActive !== false ? 'Désactiver' : 'Activer'"
+              >
+                <i class="fas" [class.fa-toggle-on]="user.isActive !== false" [class.fa-toggle-off]="user.isActive === false"></i>
+              </button>
+              <button
+                class="btn-action btn-reset"
+                (click)="sendPasswordReset(user.id)"
+                title="Réinitialiser le mot de passe"
+              >
+                <i class="fas fa-key"></i>
+              </button>
+              <button
+                class="btn-action btn-delete"
+                (click)="deleteUser(user.id)"
+                title="Supprimer"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noUsers>
+      <div class="empty-state">
+        <i class="fas fa-users"></i>
+        <p>Aucun utilisateur trouvé</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-controls" *ngIf="!isLoading() && totalPages() > 1">
+    <button
+      class="pagination-btn"
+      [disabled]="currentPage() === 1"
+      (click)="onPageChange(currentPage() - 1)"
+    >
+      <i class="fas fa-chevron-left"></i> Précédent
+    </button>
+
+    <div class="pagination-pages">
+      <button
+        *ngFor="let page of [].constructor(totalPages()); let i = index"
+        class="page-btn"
+        [class.active]="currentPage() === i + 1"
+        (click)="onPageChange(i + 1)"
+      >
+        {{ i + 1 }}
+      </button>
+    </div>
+
+    <button
+      class="pagination-btn"
+      [disabled]="currentPage() === totalPages()"
+      (click)="onPageChange(currentPage() + 1)"
+    >
+      Suivant <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <i class="fas fa-spinner fa-spin"></i> Chargement...
+    </div>
+  </ng-template>
+</div>

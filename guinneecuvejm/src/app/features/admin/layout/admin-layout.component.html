@@ -1,0 +1,156 @@
+<nz-layout class="app-layout">
+  <nz-sider
+    class="menu-sidebar"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <div class="sidebar-logo">
+      <a routerLink="/admin">
+        <img
+          src="assets/images/logo.jpeg"
+          alt="Guinée Cuve Plastique"
+          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'40\'%3E%3Ctext x=\'10\' y=\'25\' font-size=\'20\'%3ELogo%3C/text%3E%3C/svg%3E'"
+        />
+      </a>
+    </div>
+    <ul nz-menu nzMode="inline">
+      <li 
+        nz-menu-item 
+        [routerLink]="['/admin']" 
+        routerLinkActive="router-link-active" 
+        (click)="setActiveMenu('dashboard')" 
+        [ngClass]="{'active': activeMenu === 'dashboard'}">
+        <span nz-icon nzType="dashboard"></span>
+        <span>Dashboard</span>
+      </li>
+      <li 
+        nz-menu-item 
+        [routerLink]="['/admin/products']" 
+        routerLinkActive="router-link-active" 
+        (click)="setActiveMenu('produit')" 
+        [ngClass]="{'active': activeMenu === 'produit'}">
+        <span nz-icon nzType="skin"></span>
+        <span>Produits</span>
+      </li>
+      <li 
+        nz-menu-item 
+        [routerLink]="['/admin/orders']" 
+        routerLinkActive="router-link-active" 
+        (click)="setActiveMenu('commande')" 
+        [ngClass]="{'active': activeMenu === 'commande'}">
+        <span nz-icon nzType="shopping-cart"></span>
+        <span>Commandes</span>
+      </li>
+      <li 
+        nz-menu-item 
+        [routerLink]="['/admin/customers']" 
+        routerLinkActive="router-link-active" 
+        (click)="setActiveMenu('client')" 
+        [ngClass]="{'active': activeMenu === 'client'}">
+        <span nz-icon nzType="team"></span>
+        <span>Clients</span>
+      </li>
+      <li 
+        nz-menu-item 
+        [routerLink]="['/admin/inventory']" 
+        routerLinkActive="router-link-active" 
+        (click)="setActiveMenu('inventaire')" 
+        [ngClass]="{'active': activeMenu === 'inventaire'}">
+        <span nz-icon nzType="inbox"></span>
+        <span>Inventaire</span>
+      </li>
+      <li 
+        nz-menu-item 
+        [routerLink]="['/admin/reports']" 
+        routerLinkActive="router-link-active" 
+        (click)="setActiveMenu('rapport')" 
+        [ngClass]="{'active': activeMenu === 'rapport'}">
+        <span nz-icon nzType="file-text"></span>
+        <span>Rapports</span>
+      </li>
+      <li 
+        nz-menu-item 
+        *ngIf="role() === 'admin'"
+        [routerLink]="['/admin/users']" 
+        routerLinkActive="router-link-active" 
+        (click)="setActiveMenu('users')" 
+        [ngClass]="{'active': activeMenu === 'users'}">
+        <span nz-icon nzType="user"></span>
+        <span>Utilisateurs</span>
+      </li>
+    </ul>
+  </nz-sider>
+
+  <nz-layout>
+    <nz-header class="app-header">
+      <div class="app-header-content">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+          <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
+          <h3 class="header-title">{{ pageTitle }}</h3>
+        </span>
+      </div>
+      
+      <!-- Menu utilisateur avec dropdown -->
+      <div class="header-user-menu">
+        <!-- Icône de notification -->
+        <button class="notification-btn" (click)="toggleNotifications()" title="Notifications">
+          <span nz-icon nzType="bell"></span>
+          <span class="notification-badge" *ngIf="notificationCount() > 0">{{ notificationCount() }}</span>
+        </button>
+
+        <!-- Avatar et dropdown -->
+        <div class="user-dropdown" (appClickOutside)="closeDropdown()">
+          <button class="user-avatar-btn" (click)="toggleDropdown()">
+            <div class="user-avatar">
+              <span class="avatar-text">{{ getUserInitials() }}</span>
+              <span class="status-dot"></span>
+            </div>
+          </button>
+
+          <!-- Dropdown menu -->
+          <div class="dropdown-menu" *ngIf="isDropdownOpen()">
+            <!-- En-tête utilisateur -->
+            <div class="dropdown-header">
+              <div class="dropdown-avatar">
+                <span class="avatar-text">{{ getUserInitials() }}</span>
+                <span class="status-dot"></span>
+              </div>
+              <div class="user-details">
+                <div class="user-name">{{ getUserDisplayName() }}</div>
+                <div class="user-email">{{ user()?.email }}</div>
+              </div>
+            </div>
+
+            <!-- Menu items -->
+            <div class="dropdown-content">
+              <a class="dropdown-item" (click)="goToProfile(); closeDropdown()">
+                <span nz-icon nzType="user" class="item-icon"></span>
+                <span>Mon Profil</span>
+              </a>
+              <a class="dropdown-item" (click)="goToSettings(); closeDropdown()">
+                <span nz-icon nzType="setting" class="item-icon"></span>
+                <span>Paramètre</span>
+              </a>
+            </div>
+
+            <!-- Bouton déconnexion -->
+            <div class="dropdown-footer">
+              <button class="logout-btn" (click)="logout(); closeDropdown()">
+                <span nz-icon nzType="logout" class="logout-icon"></span>
+                <span>Déconnexion</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-header>
+    <nz-content class="app-content">
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

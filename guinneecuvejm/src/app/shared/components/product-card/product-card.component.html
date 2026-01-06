@@ -1,0 +1,111 @@
+<div class="product-card" [class.out-of-stock]="!isInStock">
+  <div class="product-image-wrapper">
+    <a [routerLink]="['/client/catalogue', product.id]" class="product-image-link">
+      <app-cloudinary-image
+        [src]="product.images[0] || ''"
+        [alt]="product.name"
+        [width]="300"
+        [height]="300"
+        class="product-image"
+      ></app-cloudinary-image>
+      <div class="product-overlay">
+        <span class="view-details">Voir détails</span>
+      </div>
+    </a>
+    
+    <div class="product-badges">
+      <span class="badge category-badge" [attr.data-category]="product.category">
+        {{ getCategoryLabel(product.category) }}
+      </span>
+      <span class="badge stock-badge" [class]="'stock-' + stockStatus">
+        <span *ngIf="stockStatus === 'out-of-stock'">Épuisé</span>
+        <span *ngIf="stockStatus === 'low-stock'">Stock faible</span>
+        <span *ngIf="stockStatus === 'in-stock'">En stock</span>
+      </span>
+      <span class="badge favorite-badge" *ngIf="isFavorite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        Favori
+      </span>
+    </div>
+
+    <div class="product-actions" *ngIf="showFavorite || showQuote">
+      <button
+        *ngIf="showFavorite"
+        class="action-btn favorite-btn"
+        [class.active]="isFavorite"
+        (click)="onAddToFavorites($event)"
+        [attr.aria-label]="isFavorite ? 'Retirer ' + product.name + ' des favoris' : 'Ajouter ' + product.name + ' aux favoris'"
+        [title]="isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </button>
+      <button
+        *ngIf="showQuote"
+        class="action-btn quote-btn"
+        (click)="onRequestQuote($event)"
+        [attr.aria-label]="'Demander un devis pour ' + product.name"
+        title="Demander un devis"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h3 class="product-name">
+      <a [routerLink]="['/client/catalogue', product.id]">{{ product.name }}</a>
+    </h3>
+    
+    <p class="product-description" *ngIf="product.description">
+      {{ product.description }}
+    </p>
+
+    <div class="product-specs">
+      <span class="spec-item" *ngIf="product.capacity">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        </svg>
+        {{ product.capacity }}L
+      </span>
+      <span class="spec-item stock-info" [class]="'stock-' + stockStatus">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
+        Stock: {{ product.stock }}
+      </span>
+    </div>
+
+    <div class="product-footer">
+      <div class="product-price">
+        <span class="price-value">{{ product.price | price }}</span>
+      </div>
+      
+      <button
+        *ngIf="showAddToCart"
+        class="btn-add-to-cart"
+        [class.disabled]="!isInStock"
+        [disabled]="!isInStock"
+        (click)="onAddToCart($event)"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span *ngIf="isInStock">Ajouter</span>
+        <span *ngIf="!isInStock">Indisponible</span>
+      </button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,115 @@
+<div class="product-detail-page" *ngIf="!isLoading && product">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/public">Accueil</a>
+      <span> / </span>
+      <a routerLink="/public/catalog">Catalogue</a>
+      <span> / </span>
+      <span>{{ product.name }}</span>
+    </nav>
+
+    <div class="product-detail-grid">
+      <!-- Images -->
+      <div class="product-images">
+        <div class="main-image">
+          <img
+            [src]="allImages[selectedImageIndex] || '/assets/images/placeholder-product.jpg'"
+            [alt]="product.name"
+            loading="eager"
+          >
+        </div>
+        <div class="image-thumbnails" *ngIf="allImages.length > 1">
+          <button
+            *ngFor="let image of allImages; let i = index"
+            class="thumbnail"
+            [class.active]="selectedImageIndex === i"
+            (click)="selectImage(i)"
+          >
+            <img [src]="image" [alt]="product.name + ' - Image ' + (i + 1)">
+          </button>
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        <div class="product-header">
+          <span class="product-category">{{ product.category | titlecase }}</span>
+          <h1>{{ product.name }}</h1>
+          <div class="product-availability" [class.available]="product.isAvailable" [class.unavailable]="!product.isAvailable">
+            <span *ngIf="product.isAvailable">✓ En stock</span>
+            <span *ngIf="!product.isAvailable">⚠ Sur commande</span>
+          </div>
+        </div>
+
+        <div class="product-description">
+          <p>{{ product.description }}</p>
+        </div>
+
+        <div class="product-specifications">
+          <h3>Caractéristiques</h3>
+          <ul>
+            <li *ngFor="let feature of product.features">
+              <strong>{{ feature.split(':')[0] }}:</strong>
+              <span>{{ feature.split(':')[1] || feature }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="product-actions">
+          <button class="btn-primary" (click)="requestQuote()">
+            Demander un devis
+          </button>
+          <a routerLink="/public/contact" [queryParams]="{ product: product.id }" class="btn-secondary">
+            Contacter commercial
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Specifications détaillées -->
+    <section class="detailed-specs">
+      <h2>Spécifications détaillées</h2>
+      <div class="specs-grid">
+        <div class="spec-item">
+          <strong>Dimensions:</strong>
+          <span>{{ product.specifications.dimensions }}</span>
+        </div>
+        <div class="spec-item">
+          <strong>Poids:</strong>
+          <span>{{ product.specifications.weight }}</span>
+        </div>
+        <div class="spec-item">
+          <strong>Matériau:</strong>
+          <span>{{ product.specifications.material }}</span>
+        </div>
+        <div class="spec-item">
+          <strong>Couleur:</strong>
+          <span>{{ product.specifications.color }}</span>
+        </div>
+        <div class="spec-item">
+          <strong>Garantie:</strong>
+          <span>{{ product.specifications.warranty }}</span>
+        </div>
+        <div class="spec-item">
+          <strong>Capacité:</strong>
+          <span>{{ product.capacity }}L</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Form Modal -->
+    <div class="contact-modal" *ngIf="showContactForm" (click)="showContactForm = false">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="close-btn" (click)="showContactForm = false">×</button>
+        <h3>Demande de devis</h3>
+        <app-contact-form></app-contact-form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading" *ngIf="isLoading">
+  <p>Chargement du produit...</p>
+</div>
+

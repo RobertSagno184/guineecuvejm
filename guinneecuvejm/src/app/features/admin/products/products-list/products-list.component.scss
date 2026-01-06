@@ -1,0 +1,585 @@
+@use '../../../../../assets/styles/_variables' as *;
+
+.products-list {
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    border: 2px solid $primary-color;
+    border-radius: 8px;
+    color: $primary-color;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &:hover {
+      background-color: $primary-color;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    }
+  }
+
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary-color;
+    position: relative;
+    padding-bottom: 0.5rem;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: $primary-color;
+      border-radius: 2px;
+    }
+  }
+
+  .subtitle {
+    margin: 0;
+    color: $muted-text-color;
+    font-size: 1rem;
+  }
+
+  .btn-primary {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, $primary-color 0%, $primary-color-dark 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba($primary-color, 0.3);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, $primary-color-hover 0%, $primary-color-dark 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($primary-color, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 250px;
+
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid $border-color-light;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    &:hover {
+      border-color: rgba($primary-color, 0.5);
+    }
+  }
+}
+
+.category-filter {
+  .select-input {
+    padding: 0.75rem 1rem;
+    border: 2px solid $border-color-light;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    &:hover {
+      border-color: rgba($primary-color, 0.5);
+    }
+  }
+}
+
+.products-table-container {
+  background-color: $surface-color;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  overflow-x: auto;
+  overflow-y: visible;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-top: 3px solid $primary-color;
+  -webkit-overflow-scrolling: touch;
+}
+
+.products-table {
+  width: 100%;
+  min-width: 1000px; // Largeur minimale pour afficher toutes les colonnes
+  border-collapse: collapse;
+
+  thead {
+    background-color: transparent;
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: $primary-color;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid $primary-color;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: $primary-color;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      transition: background-color 0.2s;
+      border-bottom: 1px solid $border-color-divider;
+
+      &:hover {
+        background-color: rgba($primary-color, 0.05);
+        transform: scale(1.01);
+        transition: all 0.2s;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: 1rem;
+        font-size: 0.9rem;
+        color: $text-color;
+        vertical-align: middle;
+        white-space: normal; // Permettre le retour à la ligne si nécessaire
+      }
+    }
+  }
+
+  // Largeurs minimales pour chaque colonne pour afficher toutes les informations
+  th:nth-child(1), td:nth-child(1) { min-width: 100px; } // Image
+  th:nth-child(2), td:nth-child(2) { min-width: 250px; } // Nom
+  th:nth-child(3), td:nth-child(3) { min-width: 120px; } // Catégorie
+  th:nth-child(4), td:nth-child(4) { min-width: 100px; } // Capacité
+  th:nth-child(5), td:nth-child(5) { min-width: 120px; } // Prix
+  th:nth-child(6), td:nth-child(6) { min-width: 120px; } // Stock
+  th:nth-child(7), td:nth-child(7) { min-width: 100px; } // Statut
+  th:nth-child(8), td:nth-child(8) { min-width: 150px; } // Actions
+}
+
+.image-cell {
+  width: 80px;
+
+  .product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid $border-color;
+  }
+
+  .no-image {
+    color: $muted-text-color;
+    font-style: italic;
+  }
+}
+
+.product-name {
+  font-weight: 700;
+  color: $primary-color;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.product-description {
+  font-size: 0.8rem;
+  color: $muted-text-color;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.category-cuve {
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+  }
+
+  &.category-accessoire {
+    background-color: rgba($secondary-color, 0.1);
+    color: $secondary-color;
+  }
+
+  &.category-pompe {
+    background-color: rgba($accent-color, 0.1);
+    color: $accent-color;
+  }
+}
+
+.price {
+  font-weight: 700;
+  color: $primary-color;
+  font-size: 1rem;
+}
+
+.stock-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.stock-ok {
+    background-color: rgba(0, 184, 148, 0.1);
+    color: $secondary-color;
+  }
+
+  &.stock-low {
+    background-color: rgba($alert-color, 0.1);
+    color: $alert-color;
+  }
+
+  &.stock-critical {
+    background-color: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+}
+
+.min-stock {
+  font-size: 0.75rem;
+  color: $muted-text-color;
+  margin-top: 0.25rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s;
+
+  &.active {
+    background: linear-gradient(135deg, rgba($success-color, 0.15) 0%, rgba($success-color, 0.25) 100%);
+    color: $success-color;
+    border: 1px solid rgba($success-color, 0.3);
+  }
+
+  &:not(.active) {
+    background: rgba($muted-text-color, 0.1);
+    color: $muted-text-color;
+    border: 1px solid rgba($muted-text-color, 0.2);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+
+  .btn-icon {
+    background: rgba($primary-color, 0.1);
+    border: 1px solid rgba($primary-color, 0.3);
+    border-radius: 6px;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary-color;
+    width: 36px;
+    height: 36px;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &:hover {
+      background-color: $primary-color;
+      border-color: $primary-color;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba($primary-color, 0.3);
+    }
+
+    &.danger {
+      background: rgba($error-color, 0.1);
+      border-color: rgba($error-color, 0.3);
+      color: $error-color;
+
+      &:hover {
+        background-color: $error-color;
+        border-color: $error-color;
+        color: white;
+        box-shadow: 0 4px 8px rgba($error-color, 0.3);
+      }
+    }
+  }
+}
+
+.empty-state,
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  color: $muted-text-color;
+}
+
+// Responsive
+@media (max-width: 1024px) {
+  .products-list {
+    padding: 16px;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .product-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .products-list {
+    padding: 12px;
+  }
+
+  .page-header {
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+    }
+
+    .header-actions {
+      flex-direction: column;
+      width: 100%;
+
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .search-box,
+    .category-filter {
+      width: 100%;
+    }
+  }
+
+  .products-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .products-table {
+    min-width: 900px; // Augmenter pour afficher toutes les colonnes
+    font-size: 0.85rem;
+
+    thead th,
+    tbody td {
+      padding: 0.75rem 0.5rem;
+    }
+
+    // Permettre le retour à la ligne pour certaines colonnes
+    .product-name,
+    .product-description {
+      white-space: normal;
+      word-wrap: break-word;
+    }
+
+    .image-cell {
+      width: 80px;
+      white-space: nowrap;
+
+      .product-image {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
+    .product-name {
+      font-size: 0.9rem;
+      max-width: 200px;
+    }
+
+    .product-description {
+      max-width: 200px;
+      font-size: 0.75rem;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    // S'assurer que toutes les colonnes sont visibles
+    th:nth-child(1), td:nth-child(1) { min-width: 80px; } // Image
+    th:nth-child(2), td:nth-child(2) { min-width: 200px; } // Nom
+    th:nth-child(3), td:nth-child(3) { min-width: 100px; } // Catégorie
+    th:nth-child(4), td:nth-child(4) { min-width: 80px; } // Capacité
+    th:nth-child(5), td:nth-child(5) { min-width: 100px; } // Prix
+    th:nth-child(6), td:nth-child(6) { min-width: 100px; } // Stock
+    th:nth-child(7), td:nth-child(7) { min-width: 80px; } // Statut
+    th:nth-child(8), td:nth-child(8) { min-width: 120px; } // Actions
+  }
+
+  .actions {
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      padding: 0.4rem;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .products-list {
+    padding: 8px;
+  }
+
+  .page-header {
+    h1 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .products-table {
+    min-width: 800px; // Augmenter pour afficher toutes les colonnes
+    font-size: 0.8rem;
+
+    thead th,
+    tbody td {
+      padding: 0.5rem 0.25rem;
+    }
+
+    .image-cell {
+      width: 60px;
+      white-space: nowrap;
+
+      .product-image {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    .product-name {
+      font-size: 0.85rem;
+      max-width: 150px;
+    }
+
+    .product-description {
+      max-width: 150px;
+      font-size: 0.7rem;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    // Colonnes minimales pour afficher toutes les informations
+    th:nth-child(1), td:nth-child(1) { min-width: 60px; } // Image
+    th:nth-child(2), td:nth-child(2) { min-width: 150px; } // Nom
+    th:nth-child(3), td:nth-child(3) { min-width: 80px; } // Catégorie
+    th:nth-child(4), td:nth-child(4) { min-width: 70px; } // Capacité
+    th:nth-child(5), td:nth-child(5) { min-width: 90px; } // Prix
+    th:nth-child(6), td:nth-child(6) { min-width: 90px; } // Stock
+    th:nth-child(7), td:nth-child(7) { min-width: 70px; } // Statut
+    th:nth-child(8), td:nth-child(8) { min-width: 100px; } // Actions
+  }
+
+  .actions {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+
+    .btn-icon {
+      width: 28px;
+      height: 28px;
+      padding: 0.3rem;
+      font-size: 0.75rem;
+    }
+  }
+}
+

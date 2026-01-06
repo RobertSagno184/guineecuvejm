@@ -1,0 +1,142 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="user-form">
+  <div class="page-header">
+    <h1>
+      <i class="fas" [class.fa-user-plus]="!isEditMode()" [class.fa-user-edit]="isEditMode()"></i>
+      {{ isEditMode() ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}
+    </h1>
+    <button class="btn-secondary" (click)="cancel()">
+      <i class="fas fa-times"></i> Annuler
+    </button>
+  </div>
+
+  <div class="form-container" *ngIf="!isLoading(); else loading">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <div class="form-section">
+        <h2>Informations de base</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="email">
+              <i class="fas fa-envelope"></i> Email <span class="required">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [class.error]="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+              placeholder="exemple@email.com"
+            />
+            <div class="error-message" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+              <span *ngIf="userForm.get('email')?.errors?.['required']">L'email est requis</span>
+              <span *ngIf="userForm.get('email')?.errors?.['email']">Email invalide</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="displayName">
+              <i class="fas fa-user"></i> Nom d'affichage <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="displayName"
+              formControlName="displayName"
+              class="form-control"
+              [class.error]="userForm.get('displayName')?.invalid && userForm.get('displayName')?.touched"
+              placeholder="Nom complet"
+            />
+            <div class="error-message" *ngIf="userForm.get('displayName')?.invalid && userForm.get('displayName')?.touched">
+              <span *ngIf="userForm.get('displayName')?.errors?.['required']">Le nom est requis</span>
+              <span *ngIf="userForm.get('displayName')?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="role">
+              <i class="fas fa-user-tag"></i> Rôle <span class="required">*</span>
+            </label>
+            <select
+              id="role"
+              formControlName="role"
+              class="form-control"
+              [class.error]="userForm.get('role')?.invalid && userForm.get('role')?.touched"
+            >
+              <option value="client">Client</option>
+              <option value="gérant">Gérant</option>
+              <option value="admin">Administrateur</option>
+            </select>
+            <div class="error-message" *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+              Le rôle est requis
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="!isEditMode()">
+            <label for="password">
+              <i class="fas fa-lock"></i> Mot de passe <span class="required">*</span>
+            </label>
+            <input
+              type="password"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              [class.error]="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+              placeholder="Minimum 6 caractères"
+            />
+            <div class="error-message" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+              <span *ngIf="userForm.get('password')?.errors?.['required']">Le mot de passe est requis</span>
+              <span *ngIf="userForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="!isEditMode()">
+            <label for="confirmPassword">
+              <i class="fas fa-lock"></i> Confirmer le mot de passe <span class="required">*</span>
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              class="form-control"
+              [class.error]="userForm.get('confirmPassword')?.invalid && userForm.get('confirmPassword')?.touched"
+              placeholder="Répétez le mot de passe"
+            />
+            <div class="error-message" *ngIf="userForm.get('confirmPassword')?.invalid && userForm.get('confirmPassword')?.touched">
+              <span *ngIf="userForm.get('confirmPassword')?.errors?.['required']">La confirmation est requise</span>
+              <span *ngIf="userForm.get('confirmPassword')?.errors?.['passwordMismatch']">Les mots de passe ne correspondent pas</span>
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="isEditMode()">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                formControlName="isActive"
+                class="checkbox-input"
+              />
+              <span><i class="fas fa-check-circle"></i> Compte actif</span>
+            </label>
+            <p class="help-text">Un compte inactif ne peut pas se connecter</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancel()" [disabled]="isSaving()">
+          <i class="fas fa-times"></i> Annuler
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="userForm.invalid || isSaving()">
+          <i class="fas" [class.fa-save]="isEditMode()" [class.fa-plus]="!isEditMode()"></i>
+          {{ isSaving() ? 'Enregistrement...' : (isEditMode() ? 'Enregistrer' : 'Créer') }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <i class="fas fa-spinner fa-spin"></i> Chargement...
+    </div>
+  </ng-template>
+</div>
+

@@ -1,3 +1,68 @@
-<p>Tableau de bord admin</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+<div class="dashboard-page">
+    <!-- <h2>Tableau de bord</h2> -->
+
+    <div class="dashboard-statistics">
+        <div class="stat-card">
+            <div class="maLigne">
+                <i class="fas fa-dollar-sign"></i>
+                <div>
+                    <h3>Montant Total des Ventes</h3>
+                    <p>{{ totalCompletedAmount}} FG</p>
+                </div>
+            </div>
+        </div> 
+        <div class="stat-card">
+            <div class="maLigne">
+                <i class="fas fa-box"></i>
+                <div>
+                    <h3>Produits</h3>
+                    <p>{{ totalProducts }} Produits</p>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="maLigne">
+                <i class="fas fa-money-bill-wave"></i>
+                <div>
+                    <h3>Vos Revenus</h3>
+                    <p>{{ monthlyRevenue }} FG</p>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="maLigne">
+                <i class="fas fa-comment-dots"></i>
+                <div>
+                    <h3>Commandes en Attente</h3>
+                    <p>{{ pendingOrdersCount }} Commandes</p>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="maLigne">
+                <i class="fas fa-shopping-cart"></i>
+                <div>
+                    <h3>Ventes</h3>
+                    <p>{{ completedOrdersCount }} Commandes</p>
+                </div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="maLigne">
+                <i class="fas fa-list-alt"></i>
+                <div>
+                    <h3>Total des Commandes</h3>
+                    <p>{{ allOrdersCount }} commandes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-chart">
+        <h3>Tendances des Ventes</h3>
+        <canvas style="height: 320px;" #salesChart></canvas>
+    </div>
+</div>
 

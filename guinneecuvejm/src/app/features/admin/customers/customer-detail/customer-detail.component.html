@@ -1,0 +1,201 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="customer-detail" *ngIf="!isLoading() && customer(); else loading">
+  <div class="detail-header">
+    <button class="btn-back" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Retour
+    </button>
+    <div class="header-content">
+      <h1>{{ customer()!.companyName }}</h1>
+      <p class="subtitle">Détails et historique du client</p>
+    </div>
+    <div class="header-actions">
+      <button 
+        class="btn-action btn-order"
+        (click)="createOrder()"
+        title="Créer une commande"
+        *ngIf="customer()"
+      >
+        <i class="fas fa-shopping-cart"></i> Nouvelle commande
+      </button>
+      <button 
+        class="btn-action btn-pdf"
+        (click)="generateCustomerPDF()"
+        title="Exporter en PDF"
+      >
+        <i class="fas fa-file-pdf"></i> PDF
+      </button>
+      <button 
+        class="btn-edit"
+        (click)="router.navigate(['/admin/customers/edit', customer()!.id])"
+        *ngIf="customer()"
+      >
+        <i class="fas fa-edit"></i> Modifier
+      </button>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <!-- Informations du client -->
+    <div class="detail-section">
+      <div class="section-header">
+        <h2>Informations du client</h2>
+      </div>
+      
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Entreprise / Nom</label>
+            <span>{{ customer()!.companyName }}</span>
+          </div>
+          <div class="info-item">
+            <label>Personne de contact</label>
+            <span>{{ customer()!.contactPerson }}</span>
+          </div>
+          <div class="info-item">
+            <label>Email</label>
+            <a [href]="'mailto:' + customer()!.email" class="info-link">
+              {{ customer()!.email }}
+            </a>
+          </div>
+          <div class="info-item">
+            <label>Téléphone</label>
+            <a [href]="'tel:' + customer()!.phone" class="info-link">
+              {{ customer()!.phone }}
+            </a>
+          </div>
+          <div class="info-item">
+            <label>Type</label>
+            <span class="type-badge" [class]="'type-' + customer()!.type">
+              {{ getTypeLabel(customer()!.type) }}
+            </span>
+          </div>
+          <div class="info-item full-width">
+            <label>Adresse</label>
+            <span>
+              {{ customer()!.address.street }}, {{ customer()!.address.city }}, {{ customer()!.address.country }}
+            </span>
+          </div>
+          <div class="info-item">
+            <label>Date d'inscription</label>
+            <span>{{ customer()!.createdAt | date:'longDate':'fr-FR' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Dernière mise à jour</label>
+            <span>{{ customer()!.updatedAt | date:'longDate':'fr-FR' }}</span>
+          </div>
+        </div>
+    </div>
+
+    <!-- Historique des commandes -->
+    <div class="detail-section" *ngIf="orders().length > 0">
+      <div class="section-header">
+        <h2>Historique des commandes</h2>
+        <div class="filter-buttons">
+          <button
+            class="filter-btn"
+            [class.active]="selectedStatus() === 'all'"
+            (click)="onStatusFilterChange('all')"
+          >
+            Toutes
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="selectedStatus() === 'pending'"
+            (click)="onStatusFilterChange('pending')"
+          >
+            En attente
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="selectedStatus() === 'processing'"
+            (click)="onStatusFilterChange('processing')"
+          >
+            En cours
+          </button>
+          <button
+            class="filter-btn"
+            [class.active]="selectedStatus() === 'delivered'"
+            (click)="onStatusFilterChange('delivered')"
+          >
+            Livrées
+          </button>
+        </div>
+      </div>
+      
+      <div class="orders-table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>N° Commande</th>
+              <th>Date</th>
+              <th>Articles</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of filteredOrders()">
+              <td class="order-number">
+                <strong>{{ order.orderNumber }}</strong>
+              </td>
+              <td class="order-date">
+                {{ order.createdAt | date:'shortDate':'fr-FR' }}
+                <span class="date-time">{{ order.createdAt | date:'shortTime':'fr-FR' }}</span>
+              </td>
+              <td class="order-items">
+                {{ order.items.length }} article(s)
+              </td>
+              <td class="order-amount">
+                <strong>{{ order.total | price }}</strong>
+              </td>
+              <td>
+                <span 
+                  class="status-badge" 
+                  [class]="'status-' + order.status"
+                  [style.background-color]="getStatusColor(order.status) + '20'"
+                  [style.color]="getStatusColor(order.status)"
+                >
+                  {{ getStatusLabel(order.status) }}
+                </span>
+              </td>
+              <td class="order-actions">
+                <button 
+                  class="btn-view-order"
+                  (click)="viewOrder(order.id)"
+                  title="Voir les détails"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="detail-section" *ngIf="orders().length === 0">
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+        <h3>Aucune commande</h3>
+        <p>Ce client n'a pas encore passé de commande.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des informations du client...</p>
+  </div>
+</ng-template>

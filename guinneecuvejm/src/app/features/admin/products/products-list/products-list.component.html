@@ -1,0 +1,132 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="products-list">
+  <div class="page-header">
+    <div>
+      <h1>Gestion des produits</h1>
+      <p class="subtitle">Gérez votre catalogue de produits</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="exportToCSV()" type="button">
+        <i class="fas fa-download"></i> Exporter CSV
+      </button>
+      <a routerLink="/admin/products/new" class="btn-primary">
+        <i class="fas fa-plus"></i> Ajouter un produit
+      </a>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Rechercher un produit..."
+        [value]="searchTerm()"
+        (input)="onSearchChange($any($event.target).value)"
+        class="search-input"
+      />
+    </div>
+    <div class="category-filter">
+      <select
+        [value]="selectedCategory()"
+        (change)="onCategoryChange($any($event.target).value)"
+        class="select-input"
+      >
+        <option value="all">Toutes les catégories</option>
+        <option value="cuve">Cuves</option>
+        <option value="accessoire">Accessoires</option>
+        <option value="pompe">Pompes</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tableau des produits -->
+  <div class="products-table-container" *ngIf="!isLoading(); else loading">
+    <table class="products-table" *ngIf="filteredProducts().length > 0; else noProducts">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Capacité</th>
+          <th>Prix</th>
+          <th>Stock</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts()">
+          <td class="image-cell">
+            <img
+              *ngIf="product.images && product.images.length > 0"
+              [src]="product.images[0]"
+              [alt]="product.name"
+              class="product-image"
+            />
+            <span *ngIf="!product.images || product.images.length === 0" class="no-image">—</span>
+          </td>
+          <td>
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-description">{{ product.description }}</div>
+          </td>
+          <td>
+            <span class="category-badge" [class]="'category-' + product.category">
+              {{ product.category }}
+            </span>
+          </td>
+          <td>{{ product.capacity }}L</td>
+          <td class="price">{{ formatCurrency(product.price) }}</td>
+          <td>
+            <span class="stock-badge" [class]="'stock-' + getStockStatus(product)">
+              {{ product.stock }}
+            </span>
+            <div class="min-stock">Min: {{ product.minStock }}</div>
+          </td>
+          <td>
+            <span class="status-badge" [class.active]="product.isActive">
+              {{ product.isActive ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button
+              class="btn-icon"
+              [title]="product.isActive ? 'Désactiver' : 'Activer'"
+              (click)="toggleActive(product.id, product.isActive)"
+            >
+              <i [class]="product.isActive ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+            </button>
+            <a
+              [routerLink]="['/admin/products/edit', product.id]"
+              class="btn-icon"
+              title="Modifier"
+            >
+              <i class="fas fa-edit"></i>
+            </a>
+            <button
+              class="btn-icon danger"
+              title="Supprimer"
+              (click)="deleteProduct(product.id, product.name)"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noProducts>
+      <div class="empty-state">
+        <p>Aucun produit trouvé</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <p>Chargement des produits...</p>
+    </div>
+  </ng-template>
+</div>
+

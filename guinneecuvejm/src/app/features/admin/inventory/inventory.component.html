@@ -1,0 +1,448 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="inventory">
+  <div class="page-header">
+    <div class="header-content">
+      <div>
+        <h1>Gestion de l'inventaire</h1>
+        <p class="subtitle">Suivez et gérez vos stocks</p>
+      </div>
+      <button class="btn-primary" (click)="openReceptionModal()">
+        <i class="fas fa-plus"></i> Nouvelle réception
+      </button>
+    </div>
+  </div>
+
+  <!-- Alertes stock faible -->
+  <div class="alerts-section" *ngIf="lowStockProducts().length > 0">
+    <h2><i class="fas fa-exclamation-triangle"></i> Alertes stock faible ({{ lowStockProducts().length }})</h2>
+    <div class="alerts-grid">
+      <div class="alert-card" *ngFor="let product of lowStockProducts()">
+        <div class="alert-content">
+          <h3>{{ product.name }}</h3>
+          <p>Stock actuel: <strong>{{ product.stock }}</strong> / Minimum: {{ product.minStock }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label><i class="fas fa-search"></i> Recherche</label>
+        <input
+          type="text"
+          placeholder="Rechercher un produit..."
+          [value]="searchTerm()"
+          (input)="onSearchChange($any($event.target).value)"
+          class="search-input"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label>Statut</label>
+        <select
+          [value]="statusFilter()"
+          (change)="onStatusFilterChange($any($event.target).value)"
+          class="filter-select"
+        >
+          <option value="all">Tous</option>
+          <option value="ok">OK</option>
+          <option value="low">FAIBLE</option>
+          <option value="critical">CRITIQUE</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Catégorie</label>
+        <select
+          [value]="categoryFilter()"
+          (change)="onCategoryFilterChange($any($event.target).value)"
+          class="filter-select"
+        >
+          <option value="all">Toutes</option>
+          <option value="cuve">Cuve</option>
+          <option value="pompe">Pompe</option>
+          <option value="accessoire">Accessoire</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-secondary" (click)="clearFilters()">
+          <i class="fas fa-times"></i> Réinitialiser
+        </button>
+      </div>
+    </div>
+
+    <div class="results-info">
+      <span>{{ filteredProducts().length }} produit(s) trouvé(s)</span>
+    </div>
+  </div>
+
+  <!-- Liste des produits -->
+  <div class="inventory-table-container" *ngIf="!isLoading(); else loading">
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Catégorie</th>
+          <th>Stock actuel</th>
+          <th>Stock minimum</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of paginatedProducts()">
+          <td>
+            <div class="product-info">
+              <strong>{{ product.name }}</strong>
+              <span class="product-desc" *ngIf="product.description">{{ product.description }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="category-badge category-{{ product.category }}">
+              {{ product.category }}
+            </span>
+          </td>
+          <td>
+            <span class="stock-value">{{ product.stock }}</span>
+          </td>
+          <td>{{ product.minStock }}</td>
+          <td>
+            <span class="stock-badge" [class]="'stock-' + getStockStatus(product)">
+              {{ getStatusLabel(getStockStatus(product)) }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button
+                class="btn-action btn-adjust"
+                (click)="openAdjustmentModal(product)"
+                title="Ajuster le stock"
+              >
+                <i class="fas fa-edit"></i> Ajuster
+              </button>
+              <button
+                class="btn-action btn-history"
+                (click)="openHistoryModal(product)"
+                title="Voir l'historique"
+              >
+                <i class="fas fa-history"></i> Historique
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages() > 1">
+      <div class="pagination-info">
+        <span>Page {{ currentPage() }} sur {{ totalPages() }}</span>
+        <select
+          [value]="itemsPerPage()"
+          (change)="onItemsPerPageChange(+$any($event.target).value)"
+          class="items-per-page"
+        >
+          <option value="10">10 par page</option>
+          <option value="25">25 par page</option>
+          <option value="50">50 par page</option>
+          <option value="100">100 par page</option>
+        </select>
+      </div>
+      <div class="pagination-buttons">
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage() === 1"
+          (click)="onPageChange(currentPage() - 1)"
+        >
+          <i class="fas fa-chevron-left"></i> Précédent
+        </button>
+        <div class="pagination-pages">
+          <button
+            *ngFor="let page of [].constructor(totalPages()); let i = index"
+            class="pagination-page"
+            [class.active]="currentPage() === i + 1"
+            (click)="onPageChange(i + 1)"
+          >
+            {{ i + 1 }}
+          </button>
+        </div>
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage() === totalPages()"
+          (click)="onPageChange(currentPage() + 1)"
+        >
+          Suivant <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-state">Chargement...</div>
+  </ng-template>
+</div>
+
+<!-- Modal d'ajustement de stock -->
+<div class="modal-overlay" *ngIf="showAdjustmentModal()" (click)="closeAdjustmentModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="fas fa-edit"></i> Ajuster le stock</h2>
+      <button class="modal-close" (click)="closeAdjustmentModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="product-info-modal" *ngIf="selectedProduct()">
+        <h3>{{ selectedProduct()!.name }}</h3>
+        <p>Stock actuel: <strong>{{ selectedProduct()!.stock }}</strong></p>
+      </div>
+
+      <form [formGroup]="adjustmentForm" (ngSubmit)="submitAdjustment()">
+        <div class="form-group">
+          <label>Type d'ajustement *</label>
+          <select formControlName="adjustmentType" class="form-control">
+            <option value="positive">Ajout de stock</option>
+            <option value="negative">Retrait de stock</option>
+            <option value="correction">Correction d'erreur</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Quantité *</label>
+          <input
+            type="number"
+            formControlName="quantity"
+            min="0.01"
+            step="0.01"
+            class="form-control"
+            placeholder="0.00"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Raison/Motif *</label>
+          <textarea
+            formControlName="reason"
+            rows="3"
+            class="form-control"
+            placeholder="Expliquez la raison de cet ajustement..."
+          ></textarea>
+          <small *ngIf="adjustmentForm.get('reason')?.invalid && adjustmentForm.get('reason')?.touched">
+            La raison est obligatoire (minimum 3 caractères)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Notes (optionnel)</label>
+          <textarea
+            formControlName="notes"
+            rows="2"
+            class="form-control"
+            placeholder="Notes supplémentaires..."
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeAdjustmentModal()">
+            <i class="fas fa-times"></i> Annuler
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="adjustmentForm.invalid">
+            <i class="fas fa-save"></i> Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de réception de stock -->
+<div class="modal-overlay" *ngIf="showReceptionModal()" (click)="closeReceptionModal()">
+  <div class="modal-content modal-large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="fas fa-box"></i> Nouvelle réception de stock</h2>
+      <button class="modal-close" (click)="closeReceptionModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="receptionForm" (ngSubmit)="submitReception()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Numéro de bon de réception *</label>
+            <input
+              type="text"
+              formControlName="receiptNumber"
+              class="form-control"
+              placeholder="BR-2024-001"
+              readonly
+            />
+            <small class="form-help-text">
+              <i class="fas fa-info-circle"></i> Numéro généré automatiquement
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>Fournisseur</label>
+            <input
+              type="text"
+              formControlName="supplier"
+              class="form-control"
+              placeholder="Nom du fournisseur"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Date de réception *</label>
+            <input
+              type="date"
+              formControlName="receiptDate"
+              class="form-control"
+            />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-header">
+            <h3>Produits reçus</h3>
+            <button
+              type="button"
+              class="btn-add-item"
+              (click)="addReceptionItem()"
+            >
+              <i class="fas fa-plus"></i> Ajouter un produit
+            </button>
+          </div>
+
+          <div class="items-list" formArrayName="items">
+            <div
+              *ngFor="let item of receptionItems.controls; let i = index"
+              [formGroupName]="i"
+              class="item-row"
+            >
+              <div class="form-group">
+                <label>Produit *</label>
+                <select formControlName="productId" class="form-control">
+                  <option value="">Sélectionner un produit</option>
+                  <option *ngFor="let product of allProducts()" [value]="product.id">
+                    {{ product.name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Quantité *</label>
+                <input
+                  type="number"
+                  formControlName="quantity"
+                  min="0.01"
+                  step="0.01"
+                  class="form-control"
+                  placeholder="0.00"
+                />
+              </div>
+
+              <button
+                type="button"
+                class="btn-remove"
+                (click)="removeReceptionItem(i)"
+                title="Supprimer"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div *ngIf="receptionItems.length === 0" class="empty-items">
+              <p>Aucun produit ajouté. Cliquez sur "Ajouter un produit" pour commencer.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeReceptionModal()">
+            <i class="fas fa-times"></i> Annuler
+          </button>
+          <button type="submit" class="btn-primary" [disabled]="receptionForm.invalid || receptionItems.length === 0">
+            <i class="fas fa-save"></i> Enregistrer la réception
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal d'historique des mouvements -->
+<div class="modal-overlay" *ngIf="showHistoryModal()" (click)="closeHistoryModal()">
+  <div class="modal-content modal-large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="fas fa-history"></i> Historique des mouvements</h2>
+      <button class="modal-close" (click)="closeHistoryModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="product-info-modal" *ngIf="selectedProduct()">
+        <h3>{{ selectedProduct()!.name }}</h3>
+        <p>Stock actuel: <strong>{{ selectedProduct()!.stock }}</strong></p>
+      </div>
+
+      <div class="movements-table-container" *ngIf="selectedProductMovements().length > 0; else noMovements">
+        <table class="movements-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Quantité</th>
+              <th>Stock avant</th>
+              <th>Stock après</th>
+              <th>Raison</th>
+              <th>Par</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let movement of selectedProductMovements()">
+              <td>{{ movement.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <span class="movement-type movement-{{ movement.type }}">
+                  {{ getMovementTypeLabel(movement.type) }}
+                  <span *ngIf="movement.adjustmentType" class="adjustment-type">
+                    ({{ getAdjustmentTypeLabel(movement.adjustmentType) }})
+                  </span>
+                </span>
+              </td>
+              <td>
+                <span [class.positive]="movement.quantity > 0" [class.negative]="movement.quantity < 0">
+                  {{ movement.quantity > 0 ? '+' : '' }}{{ movement.quantity }}
+                </span>
+              </td>
+              <td>{{ movement.previousStock }}</td>
+              <td><strong>{{ movement.newStock }}</strong></td>
+              <td>
+                <div class="reason-cell">
+                  <span>{{ movement.reason }}</span>
+                  <span *ngIf="movement.notes" class="notes">Note: {{ movement.notes }}</span>
+                  <span *ngIf="movement.receiptNumber" class="receipt-info">
+                    Bon: {{ movement.receiptNumber }}
+                  </span>
+                  <span *ngIf="movement.supplier" class="supplier-info">
+                    Fournisseur: {{ movement.supplier }}
+                  </span>
+                </div>
+              </td>
+              <td>{{ movement.createdByName || movement.createdBy }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #noMovements>
+        <div class="no-movements">
+          <p>Aucun mouvement enregistré pour ce produit.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

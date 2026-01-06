@@ -1,0 +1,176 @@
+<div class="order-detail-page">
+  <!-- Success Message -->
+  <div class="success-message" *ngIf="showSuccessMessage()">
+    <div class="success-content">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <div>
+        <strong>Commande confirmée !</strong>
+        <p>Votre commande a été créée avec succès. Vous recevrez un email de confirmation.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="order-header">
+    <button class="back-btn" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Retour aux commandes
+    </button>
+    <div class="header-content">
+      <div>
+        <h1>Commande {{ order()?.orderNumber }}</h1>
+        <p class="order-date" *ngIf="order()">
+          Passée le {{ order()!.createdAt | date:'longDate':'fr-FR' }} à {{ order()!.createdAt | date:'shortTime':'fr-FR' }}
+        </p>
+      </div>
+      <div class="order-status-badge" *ngIf="order()" [style.background-color]="getStatusColor(order()!.status) + '20'" [style.color]="getStatusColor(order()!.status)">
+        {{ getStatusLabel(order()!.status) }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Chargement de la commande...</p>
+  </div>
+
+  <!-- Order Content -->
+  <div class="order-content" *ngIf="!isLoading() && order()">
+    <div class="order-main">
+      <!-- Timeline -->
+      <section class="order-section">
+        <h2>Suivi de commande</h2>
+        <div class="timeline">
+          <div
+            *ngFor="let step of timelineSteps(); let i = index"
+            class="timeline-step"
+            [class.completed]="step.completed"
+            [class.current]="step.current"
+          >
+            <div class="timeline-marker">
+              <svg *ngIf="step.completed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <div *ngIf="!step.completed" class="marker-dot"></div>
+            </div>
+            <div class="timeline-content">
+              <h3>{{ step.label }}</h3>
+              <p>{{ step.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="delivery-estimate" *ngIf="order()!.status !== 'cancelled' && order()!.status !== 'delivered'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <div>
+            <strong>Date de livraison estimée :</strong>
+            <span>{{ getEstimatedDeliveryDate() | date:'longDate':'fr-FR' }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Order Items -->
+      <section class="order-section">
+        <h2>Articles commandés</h2>
+        <div class="order-items">
+          <div class="order-item" *ngFor="let item of order()!.items">
+            <div class="item-info">
+              <div class="item-name">{{ item.productName }}</div>
+              <div class="item-details">
+                <span>Quantité: {{ item.quantity }}</span>
+                <span class="separator">•</span>
+                <span>Prix unitaire: {{ item.unitPrice | price }}</span>
+              </div>
+            </div>
+            <div class="item-total">{{ item.totalPrice | price }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Order Information -->
+      <section class="order-section">
+        <h2>Informations de la commande</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Mode de paiement</label>
+            <span>{{ getPaymentMethodLabel(order()!.paymentMethod) }}</span>
+          </div>
+          <div class="info-item" *ngIf="order()!.notes">
+            <label>Notes</label>
+            <span>{{ order()!.notes }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Order Summary Sidebar -->
+    <aside class="order-summary">
+      <div class="summary-card">
+        <h2>Récapitulatif</h2>
+        
+        <div class="summary-row">
+          <span>Sous-total</span>
+          <span>{{ order()!.subtotal | price }}</span>
+        </div>
+        
+        <div class="summary-row">
+          <span>TVA (18%)</span>
+          <span>{{ order()!.tax | price }}</span>
+        </div>
+        
+        <div class="summary-divider"></div>
+        
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>{{ order()!.total | price }}</span>
+        </div>
+
+        <div class="summary-actions">
+          <button class="btn-download" (click)="downloadInvoice()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Télécharger la facture
+          </button>
+
+          <button
+            *ngIf="canCancel()"
+            class="btn-cancel"
+            (click)="cancelOrder()"
+            [disabled]="isCancelling()"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            <span *ngIf="!isCancelling()">Annuler la commande</span>
+            <span *ngIf="isCancelling()">Annulation...</span>
+          </button>
+        </div>
+
+        <div class="summary-info">
+          <p>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Pour toute question, contactez notre service client
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+

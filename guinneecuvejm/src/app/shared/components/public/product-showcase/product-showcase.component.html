@@ -1,0 +1,28 @@
+<section class="product-showcase">
+  <div class="container">
+    <div class="section-header">
+      <h2>{{ title() }}</h2>
+      <a 
+        *ngIf="showViewAll()"
+        routerLink="/public/catalog"
+        class="view-all-link"
+      >
+        Voir tout le catalogue →
+      </a>
+    </div>
+
+    <div class="products-grid" *ngIf="products().length > 0; else noProducts">
+      <app-public-product-card
+        *ngFor="let product of products()"
+        [product]="product"
+      />
+    </div>
+
+    <ng-template #noProducts>
+      <div class="no-products">
+        <p>Aucun produit disponible pour le moment.</p>
+      </div>
+    </ng-template>
+  </div>
+</section>
+

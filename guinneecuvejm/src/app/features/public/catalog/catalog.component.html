@@ -1,24 +1,126 @@
-<section class="public-section catalog">
-  <header class="section-header">
-    <h2>Catalogue des cuves plastiques</h2>
-    <p>Découvrez une sélection de cuves adaptées aux besoins des ménages, commerces et industries.</p>
-  </header>
+<div class="catalog-page">
+  <div class="container">
+    <!-- Header -->
+    <header class="catalog-header">
+      <h1>Catalogue de produits</h1>
+      <p>Découvrez notre sélection complète de cuves plastique, pompes et accessoires</p>
+    </header>
 
-  <div class="product-grid">
-    <article class="product-card" *ngFor="let product of products">
-      <div class="product-header">
-        <h3>{{ product.name }}</h3>
-        <span class="product-category">{{ product.category }}</span>
+    <!-- Filtres et recherche -->
+    <div class="catalog-controls">
+      <div class="search-section">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Rechercher un produit..."
+          [value]="searchTerm()"
+          (input)="onSearchChange($any($event.target).value)"
+        >
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
       </div>
-      <p class="product-description">{{ product.description }}</p>
-      <div class="product-meta">
-        <span class="product-price">{{ product.price | price }}</span>
-        <span class="product-stock">
-          {{ product.stock > 0 ? (product.stock + ' en stock') : 'Rupture de stock' }}
-        </span>
+
+      <div class="filters-section">
+        <div class="filter-group">
+          <label for="category">Catégorie</label>
+          <select
+            id="category"
+            [value]="selectedCategory()"
+            (change)="onCategoryChange($any($event.target).value)"
+          >
+            <option *ngFor="let cat of categories" [value]="cat.value">
+              {{ cat.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="capacity">Capacité</label>
+          <select
+            id="capacity"
+            (change)="onCapacityRangeChange(capacityRanges[$any($event.target).selectedIndex])"
+          >
+            <option value="">Toutes capacités</option>
+            <option *ngFor="let range of capacityRanges" [value]="range.label">
+              {{ range.label }}
+            </option>
+          </select>
+        </div>
+
+        <button class="btn-clear-filters" *ngIf="hasActiveFilters" (click)="clearFilters()">
+          Réinitialiser
+        </button>
       </div>
-    </article>
+
+      <div class="view-controls">
+        <button
+          class="view-btn"
+          [class.active]="viewMode() === 'grid'"
+          (click)="viewMode.set('grid')"
+          aria-label="Vue grille"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </button>
+        <button
+          class="view-btn"
+          [class.active]="viewMode() === 'list'"
+          (click)="viewMode.set('list')"
+          aria-label="Vue liste"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Résultats -->
+    <div class="catalog-results">
+      <div class="results-info" *ngIf="!isLoading()">
+        <p>
+          <strong>{{ filteredProducts().length }}</strong>
+          produit{{ filteredProducts().length > 1 ? 's' : '' }} trouvé{{ filteredProducts().length > 1 ? 's' : '' }}
+        </p>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading" *ngIf="isLoading()">
+        <p>Chargement des produits...</p>
+      </div>
+
+      <!-- Produits -->
+      <div
+        class="products-container"
+        [class.grid-view]="viewMode() === 'grid'"
+        [class.list-view]="viewMode() === 'list'"
+        *ngIf="!isLoading()"
+      >
+        <app-public-product-card
+          *ngFor="let product of filteredProducts()"
+          [product]="product"
+          [class.horizontal]="viewMode() === 'list'"
+        ></app-public-product-card>
+      </div>
+
+      <!-- Aucun résultat -->
+      <div class="no-results" *ngIf="!isLoading() && filteredProducts().length === 0">
+        <p>Aucun produit ne correspond à vos critères de recherche.</p>
+        <button class="btn-clear-filters" (click)="clearFilters()">
+          Réinitialiser les filtres
+        </button>
+      </div>
+    </div>
   </div>
-</section>
-
-
+</div>

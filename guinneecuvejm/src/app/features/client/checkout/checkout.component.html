@@ -1,0 +1,253 @@
+<div class="checkout-page">
+  <div class="checkout-header">
+    <button class="back-btn" (click)="goBackToCart()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Retour au panier
+    </button>
+    <h1>Passer la commande</h1>
+    <p class="subtitle">Vérifiez vos informations et finalisez votre commande</p>
+  </div>
+
+  <div class="checkout-container">
+    <!-- Main Content -->
+    <div class="checkout-main">
+      <!-- Step 1: Delivery Address -->
+      <section class="checkout-section">
+        <div class="section-header">
+          <div class="step-number">1</div>
+          <h2>Adresse de livraison</h2>
+        </div>
+        
+        <form [formGroup]="deliveryForm" class="delivery-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fullName">Nom complet *</label>
+              <input
+                type="text"
+                id="fullName"
+                formControlName="fullName"
+                placeholder="Votre nom complet"
+                [class.error]="deliveryForm.get('fullName')?.invalid && deliveryForm.get('fullName')?.touched"
+              />
+              <span class="error-message" *ngIf="deliveryForm.get('fullName')?.invalid && deliveryForm.get('fullName')?.touched">
+                Le nom est requis (minimum 2 caractères)
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Téléphone *</label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                placeholder="+224 XXX XXX XXX"
+                [class.error]="deliveryForm.get('phone')?.invalid && deliveryForm.get('phone')?.touched"
+              />
+              <span class="error-message" *ngIf="deliveryForm.get('phone')?.invalid && deliveryForm.get('phone')?.touched">
+                Téléphone invalide
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="street">Adresse *</label>
+            <input
+              type="text"
+              id="street"
+              formControlName="street"
+              placeholder="Rue, quartier, numéro"
+              [class.error]="deliveryForm.get('street')?.invalid && deliveryForm.get('street')?.touched"
+            />
+            <span class="error-message" *ngIf="deliveryForm.get('street')?.invalid && deliveryForm.get('street')?.touched">
+              L'adresse est requise (minimum 5 caractères)
+            </span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">Ville *</label>
+              <input
+                type="text"
+                id="city"
+                formControlName="city"
+                placeholder="Ville"
+                [class.error]="deliveryForm.get('city')?.invalid && deliveryForm.get('city')?.touched"
+              />
+              <span class="error-message" *ngIf="deliveryForm.get('city')?.invalid && deliveryForm.get('city')?.touched">
+                La ville est requise
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="country">Pays *</label>
+              <input
+                type="text"
+                id="country"
+                formControlName="country"
+                placeholder="Pays"
+                [class.error]="deliveryForm.get('country')?.invalid && deliveryForm.get('country')?.touched"
+              />
+              <span class="error-message" *ngIf="deliveryForm.get('country')?.invalid && deliveryForm.get('country')?.touched">
+                Le pays est requis
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="postalCode">Code postal</label>
+              <input
+                type="text"
+                id="postalCode"
+                formControlName="postalCode"
+                placeholder="Code postal (optionnel)"
+              />
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Step 2: Payment Method -->
+      <section class="checkout-section">
+        <div class="section-header">
+          <div class="step-number">2</div>
+          <h2>Mode de paiement</h2>
+        </div>
+
+        <form [formGroup]="paymentForm" class="payment-form">
+          <div class="payment-options">
+            <label class="payment-option" [class.selected]="paymentForm.get('paymentMethod')?.value === 'cash'">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="cash"
+              />
+              <div class="payment-option-content">
+                <div class="payment-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                  </svg>
+                </div>
+                <div>
+                  <div class="payment-title">À la livraison</div>
+                  <div class="payment-description">Paiement en espèces à la réception</div>
+                </div>
+              </div>
+            </label>
+
+            <label class="payment-option" [class.selected]="paymentForm.get('paymentMethod')?.value === 'bank_transfer'">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="bank_transfer"
+              />
+              <div class="payment-option-content">
+                <div class="payment-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="21" y1="10" x2="7" y2="10"></line>
+                    <line x1="21" y1="6" x2="3" y2="6"></line>
+                    <line x1="21" y1="14" x2="3" y2="14"></line>
+                    <line x1="7" y1="18" x2="3" y2="18"></line>
+                  </svg>
+                </div>
+                <div>
+                  <div class="payment-title">Virement bancaire</div>
+                  <div class="payment-description">Effectuez un virement avant la livraison</div>
+                </div>
+              </div>
+            </label>
+
+            <label class="payment-option" [class.selected]="paymentForm.get('paymentMethod')?.value === 'check'">
+              <input
+                type="radio"
+                formControlName="paymentMethod"
+                value="check"
+              />
+              <div class="payment-option-content">
+                <div class="payment-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                </div>
+                <div>
+                  <div class="payment-title">Chèque</div>
+                  <div class="payment-description">Paiement par chèque à la livraison</div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes pour la commande (optionnel)</label>
+            <textarea
+              id="notes"
+              formControlName="notes"
+              rows="4"
+              placeholder="Instructions spéciales, préférences de livraison, etc."
+            ></textarea>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <!-- Order Summary Sidebar -->
+    <aside class="checkout-summary">
+      <div class="summary-card">
+        <h2>Récapitulatif de la commande</h2>
+
+        <!-- Order Items -->
+        <div class="summary-items">
+          <div class="summary-item" *ngFor="let item of cart().items">
+            <div class="item-image">
+              <app-cloudinary-image
+                [src]="item.product.images[0] || ''"
+                [alt]="item.product.name"
+                [width]="60"
+                [height]="60"
+              ></app-cloudinary-image>
+            </div>
+            <div class="item-info">
+              <div class="item-name">{{ item.product.name }}</div>
+              <div class="item-quantity">Quantité: {{ item.quantity }}</div>
+            </div>
+            <div class="item-price">{{ item.totalPrice | price }}</div>
+          </div>
+        </div>
+
+        <!-- Order Totals -->
+        <div class="summary-totals">
+          <div class="total-row total">
+            <span>Total</span>
+            <span>{{ cart().total | price }}</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          class="submit-order-btn"
+          (click)="submitOrder()"
+          [disabled]="isSubmitting() || deliveryForm.invalid || paymentForm.invalid"
+        >
+          <span *ngIf="!isSubmitting()">Confirmer la commande</span>
+          <span *ngIf="isSubmitting()">Traitement en cours...</span>
+        </button>
+
+        <div class="summary-info">
+          <p>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            En confirmant, vous acceptez nos conditions générales de vente
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+

@@ -1,0 +1,78 @@
+<header class="public-header">
+  <div class="header-container">
+    <div class="logo-section">
+      <a routerLink="/public" class="logo">
+        <span class="logo-text">Guinée Cuve Plastique</span>
+      </a>
+      <button 
+        class="mobile-menu-toggle"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen()"
+        aria-label="Toggle menu"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <nav class="nav-menu" [class.mobile-open]="isMobileMenuOpen()">
+      <a 
+        routerLink="/public" 
+        [class.active]="currentRoute() === '/public' || currentRoute() === '/public/'"
+        (click)="closeMobileMenu()"
+      >
+        Accueil
+      </a>
+      <a 
+        routerLink="/public/catalog" 
+        [class.active]="isActiveRoute('/public/catalog')"
+        (click)="closeMobileMenu()"
+      >
+        Catalogue
+      </a>
+      <a 
+        routerLink="/public/services" 
+        [class.active]="isActiveRoute('/public/services')"
+        (click)="closeMobileMenu()"
+      >
+        Services
+      </a>
+      <a 
+        routerLink="/public/about" 
+        [class.active]="isActiveRoute('/public/about')"
+        (click)="closeMobileMenu()"
+      >
+        À propos
+      </a>
+      <a 
+        routerLink="/public/testimonials" 
+        [class.active]="isActiveRoute('/public/testimonials')"
+        (click)="closeMobileMenu()"
+      >
+        Témoignages
+      </a>
+      <a 
+        routerLink="/public/contact" 
+        [class.active]="isActiveRoute('/public/contact')"
+        (click)="closeMobileMenu()"
+      >
+        Contact
+      </a>
+
+      <div class="auth-section">
+        <ng-container *ngIf="!isAuthenticated()">
+          <a routerLink="/auth/login" class="btn-link" (click)="closeMobileMenu()">Connexion</a>
+          <a routerLink="/auth/register" class="btn-primary" (click)="closeMobileMenu()">Espace client</a>
+        </ng-container>
+        <ng-container *ngIf="isAuthenticated()">
+          <button class="btn-primary" (click)="goToDashboard(); closeMobileMenu()">
+            Mon espace
+          </button>
+          <button class="btn-link" (click)="logout(); closeMobileMenu()">Déconnexion</button>
+        </ng-container>
+      </div>
+    </nav>
+  </div>
+</header>
+

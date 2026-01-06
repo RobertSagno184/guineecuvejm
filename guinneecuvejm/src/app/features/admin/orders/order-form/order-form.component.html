@@ -1,0 +1,189 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div class="order-form">
+  <div class="form-header">
+    <h1>Nouvelle commande</h1>
+    <button class="btn-secondary" (click)="cancel()" type="button">
+      <i class="fas fa-times"></i> Annuler
+    </button>
+  </div>
+
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading(); else loading">
+    <!-- Sélection du client -->
+    <div class="form-section">
+      <h2>Client</h2>
+      
+      <div class="form-group" *ngIf="!customerId()">
+        <label for="customerId">Client *</label>
+        <select
+          id="customerId"
+          formControlName="customerId"
+          class="form-input"
+          [class.error]="orderForm.get('customerId')?.invalid && orderForm.get('customerId')?.touched"
+        >
+          <option value="">Sélectionner un client</option>
+          <option *ngFor="let customer of customers()" [value]="customer.id">
+            {{ customer.companyName }} - {{ customer.contactPerson }}
+          </option>
+        </select>
+        <div class="error-message" *ngIf="orderForm.get('customerId')?.invalid && orderForm.get('customerId')?.touched">
+          Le client est requis
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="customerId()">
+        <label>Client</label>
+        <div class="customer-info">
+          <strong>{{ getCustomerName() }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Produits -->
+    <div class="form-section">
+      <div class="section-header-row">
+        <h2>Produits</h2>
+        <button type="button" class="btn-add" (click)="addProductItem()">
+          <i class="fas fa-plus"></i> Ajouter un produit
+        </button>
+      </div>
+
+      <div class="items-list" *ngIf="itemsFormArray.length > 0; else noItems">
+        <div class="item-row" *ngFor="let item of itemsFormArray.controls; let i = index" [formGroup]="$any(item)">
+          <div class="item-product">
+            <label>Produit *</label>
+            <select
+              formControlName="productId"
+              class="form-input"
+              [class.error]="item.get('productId')?.invalid && item.get('productId')?.touched"
+            >
+              <option value="">Sélectionner un produit</option>
+              <option *ngFor="let product of products()" [value]="product.id" [disabled]="product.stock <= 0">
+                {{ product.name }} - {{ product.price | price }} 
+                <ng-container *ngIf="product.stock <= 0">(Rupture de stock)</ng-container>
+                <ng-container *ngIf="product.stock > 0">(Stock: {{ product.stock }})</ng-container>
+              </option>
+            </select>
+          </div>
+
+          <div class="item-quantity">
+            <label>Quantité *</label>
+            <input
+              type="number"
+              formControlName="quantity"
+              class="form-input"
+              [min]="1"
+              [max]="getMaxQuantity(i)"
+              [class.error]="(item.get('quantity')?.invalid && item.get('quantity')?.touched) || !isStockAvailable(i)"
+            />
+            <div class="stock-info" *ngIf="item.get('productId')?.value">
+              <small [class.stock-warning]="getStockStatus(i).insufficient">
+                Stock disponible: {{ getStockStatus(i).available }}
+                <span *ngIf="getStockStatus(i).insufficient" class="error-text">
+                  (Quantité demandée: {{ getStockStatus(i).requested }})
+                </span>
+              </small>
+            </div>
+            <div class="error-message" *ngIf="!isStockAvailable(i)">
+              Stock insuffisant. Quantité max: {{ getMaxQuantity(i) }}
+            </div>
+          </div>
+
+          <div class="item-price">
+            <label>Prix unitaire (GNF) *</label>
+            <input
+              type="number"
+              formControlName="unitPrice"
+              class="form-input"
+              min="0"
+              step="1000"
+              [class.error]="item.get('unitPrice')?.invalid && item.get('unitPrice')?.touched"
+            />
+          </div>
+
+          <div class="item-total">
+            <label>Total</label>
+            <div class="total-display">{{ getItemTotal(i) | price }}</div>
+          </div>
+
+          <div class="item-actions">
+            <button type="button" class="btn-remove" (click)="removeProductItem(i)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noItems>
+        <div class="empty-items">
+          <p>Aucun produit ajouté. Cliquez sur "Ajouter un produit" pour commencer.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Récapitulatif et paiement -->
+    <div class="form-section">
+      <h2>Récapitulatif et paiement</h2>
+
+      <div class="summary-grid">
+        <div class="summary-item">
+          <label>Sous-total</label>
+          <span class="summary-value">{{ getSubtotal() | price }}</span>
+        </div>
+        <div class="summary-item">
+          <label>TVA</label>
+          <span class="summary-value">{{ getTax() | price }}</span>
+        </div>
+        <div class="summary-item total">
+          <label>Total</label>
+          <span class="summary-value">{{ getTotal() | price }}</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="paymentMethod">Mode de paiement *</label>
+        <select
+          id="paymentMethod"
+          formControlName="paymentMethod"
+          class="form-input"
+          [class.error]="orderForm.get('paymentMethod')?.invalid && orderForm.get('paymentMethod')?.touched"
+        >
+          <option value="cash">Espèces</option>
+          <option value="bank_transfer">Virement bancaire</option>
+          <option value="check">Chèque</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          class="form-input"
+          rows="3"
+          placeholder="Notes additionnelles sur la commande..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="cancel()">
+        Annuler
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="isSubmitting()">
+        <i class="fas fa-save" *ngIf="!isSubmitting()"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting()"></i>
+        {{ isSubmitting() ? 'Création...' : 'Créer la commande' }}
+      </button>
+    </div>
+  </form>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement...</p>
+    </div>
+  </ng-template>
+</div>
+

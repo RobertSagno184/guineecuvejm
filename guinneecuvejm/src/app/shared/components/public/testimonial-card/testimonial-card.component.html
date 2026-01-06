@@ -1,0 +1,29 @@
+<article class="testimonial-card">
+  <div class="testimonial-header">
+    <div class="testimonial-image" *ngIf="testimonial().imageUrl">
+      <img [src]="testimonial().imageUrl" [alt]="testimonial().clientName">
+    </div>
+    <div class="testimonial-info">
+      <h4 class="client-name">{{ testimonial().clientName }}</h4>
+      <p class="company">{{ testimonial().company }}</p>
+      <p class="project-type" *ngIf="testimonial().projectType">{{ testimonial().projectType }}</p>
+    </div>
+  </div>
+  
+  <div class="testimonial-rating">
+    <span 
+      *ngFor="let filled of getStars()"
+      class="star"
+      [class.filled]="filled"
+    >
+      ★
+    </span>
+  </div>
+
+  <p class="testimonial-comment">{{ testimonial().comment }}</p>
+
+  <div class="testimonial-footer">
+    <span class="testimonial-date">{{ testimonial().date | date:'dd MMMM yyyy' }}</span>
+  </div>
+</article>
+

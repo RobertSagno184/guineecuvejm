@@ -1,32 +1,29 @@
-import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ButtonComponent } from '../../../shared/components/ui/button/button.component';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { SeoService } from '../../../core/services/public/seo.service';
+import { ContactFormComponent } from '../../../shared/components/public/contact-form/contact-form.component';
 
 @Component({
   selector: 'app-public-contact',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonComponent],
+  imports: [CommonModule, ContactFormComponent],
   templateUrl: './contact.component.html',
-  styleUrl: './contact.component.css',
+  styleUrl: './contact.component.scss',
 })
-export class ContactComponent {
-  private readonly fb = inject(FormBuilder);
+export class ContactComponent implements OnInit {
+  private readonly seoService = inject(SeoService);
+  private readonly route = inject(ActivatedRoute);
 
-  readonly form = this.fb.group({
-    name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    message: ['', Validators.required],
-  });
+  productInterest: string | null = null;
 
-  constructor() {}
+  ngOnInit(): void {
+    this.seoService.updateTags({
+      title: 'Contactez-nous - Guinée Cuve Plastique',
+      description: 'Contactez Guinée Cuve Plastique pour toute question sur nos produits, demandes de devis ou informations commerciales.',
+      keywords: 'contact cuve plastique, devis cuve, information commerciale'
+    });
 
-  submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    console.log('Contact form', this.form.value);
+    this.productInterest = this.route.snapshot.queryParams['product'] || null;
   }
 }
-
-

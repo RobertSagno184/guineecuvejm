@@ -1,0 +1,130 @@
+<div class="catalog-page">
+  <div class="catalog-header">
+    <h1>Catalogue Produits</h1>
+    <p class="subtitle">Découvrez notre gamme complète de cuves, accessoires et pompes</p>
+  </div>
+
+  <div class="catalog-container">
+    <!-- Sidebar Filters -->
+    <aside class="filters-sidebar">
+      <div class="filters-header">
+        <h2>Filtres</h2>
+        <button class="clear-filters-btn" *ngIf="hasActiveFilters" (click)="clearFilters()">
+          Réinitialiser
+        </button>
+      </div>
+
+      <!-- Recherche -->
+      <div class="filter-section">
+        <label class="filter-label">Recherche</label>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Rechercher un produit..."
+          [value]="searchTerm()"
+          (input)="onSearchChange($any($event.target).value)"
+        />
+      </div>
+
+      <!-- Catégorie -->
+      <div class="filter-section">
+        <label class="filter-label">Catégorie</label>
+        <div class="filter-options">
+          <label *ngFor="let cat of categories" class="radio-option">
+            <input
+              type="radio"
+              name="category"
+              [value]="cat.value"
+              [checked]="selectedCategory() === cat.value"
+              (change)="onCategoryChange($any($event.target).value)"
+            />
+            <span>{{ cat.label }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Prix -->
+      <div class="filter-section" *ngIf="priceRange().max > 0">
+        <label class="filter-label">Prix (GNF)</label>
+        <div class="price-range">
+          <div class="price-inputs">
+            <input
+              type="number"
+              class="price-input"
+              [min]="priceRange().min"
+              [max]="priceRange().max"
+              [(ngModel)]="selectedPriceRange().min"
+              (ngModelChange)="onPriceRangeChange()"
+              placeholder="Min"
+            />
+            <span>-</span>
+            <input
+              type="number"
+              class="price-input"
+              [min]="priceRange().min"
+              [max]="priceRange().max"
+              [(ngModel)]="selectedPriceRange().max"
+              (ngModelChange)="onPriceRangeChange()"
+              placeholder="Max"
+            />
+          </div>
+          <div class="price-display">
+            {{ selectedPriceRange().min | price }} - {{ selectedPriceRange().max | price }}
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="catalog-main">
+      <!-- Toolbar -->
+      <div class="catalog-toolbar">
+        <div class="results-count">
+          <strong>{{ filteredProducts().length }}</strong> produit(s) trouvé(s)
+        </div>
+        <div class="sort-controls">
+          <label for="sort-select">Trier par:</label>
+          <select
+            id="sort-select"
+            class="sort-select"
+            [value]="sortOption()"
+            (change)="onSortChange($any($event.target).value)"
+          >
+            <option *ngFor="let option of sortOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="isLoading()">
+        <div class="spinner"></div>
+        <p>Chargement des produits...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading() && filteredProducts().length === 0">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="M21 21l-4.35-4.35"></path>
+        </svg>
+        <h3>Aucun produit trouvé</h3>
+        <p>Essayez de modifier vos critères de recherche</p>
+        <button class="btn-primary" (click)="clearFilters()">Réinitialiser les filtres</button>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" *ngIf="!isLoading() && filteredProducts().length > 0">
+        <app-product-card
+          *ngFor="let product of filteredProducts()"
+          [product]="product"
+          (addToCart)="onAddToCart($event)"
+          (addToFavorites)="onAddToFavorites($event)"
+          (requestQuote)="onRequestQuote($event)"
+        ></app-product-card>
+      </div>
+    </main>
+  </div>
+</div>
+

@@ -1,0 +1,491 @@
+@use '../../../../assets/styles/_variables' as *;
+@use 'sass:color';
+
+.reports {
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary-color;
+    position: relative;
+    padding-bottom: 0.5rem;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: $primary-color;
+      border-radius: 2px;
+    }
+  }
+
+  .subtitle {
+    margin: 0;
+    color: $muted-text-color;
+    font-size: 1rem;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    border: 2px solid $primary-color;
+    border-radius: 8px;
+    color: $primary-color;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &:hover {
+      background-color: $primary-color;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    }
+  }
+}
+
+.filters-section {
+  background: $surface-color;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .period-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: $text-color;
+      font-size: 0.9rem;
+    }
+
+    .filter-select,
+    .filter-input {
+      padding: 0.75rem;
+      border: 2px solid $border-color-light;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background-color: white;
+      color: $text-color;
+      transition: all 0.3s;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+
+      &:hover {
+        border-color: rgba($primary-color, 0.5);
+      }
+    }
+
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+      accent-color: $primary-color;
+    }
+  }
+}
+
+.kpi-section {
+  margin-bottom: 2rem;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.kpi-card {
+  background: $surface-color;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .kpi-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
+
+  .kpi-content {
+    flex: 1;
+
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: $muted-text-color;
+    }
+
+    .kpi-value {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: $text-color;
+    }
+
+    .kpi-growth {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+
+      &.positive {
+        color: $success-color;
+      }
+
+      &.negative {
+        color: $error-color;
+      }
+    }
+  }
+}
+
+.tabs-section {
+  background: $surface-color;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tabs-header {
+  display: flex;
+  border-bottom: 2px solid $border-color-divider;
+  background: $bg-color;
+  overflow-x: auto;
+
+  .tab-button {
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: $muted-text-color;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+
+    i {
+      font-size: 0.9rem;
+    }
+
+    &:hover {
+      color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+
+    &.active {
+      color: $primary-color;
+      border-bottom-color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+  }
+}
+
+.tabs-content {
+  padding: 2rem;
+}
+
+.tab-panel {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.chart-card {
+  background: $surface-color;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  canvas {
+    max-height: 400px;
+  }
+}
+
+.report-section {
+  h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $text-color;
+    border-bottom: 2px solid $primary-color;
+    padding-bottom: 0.5rem;
+  }
+}
+
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  background: $bg-color;
+  border: 1px solid $border-color-light;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: $muted-text-color;
+    font-weight: 500;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $primary-color;
+  }
+}
+
+.table-container {
+  margin-top: 2rem;
+  overflow-x: auto;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: $surface-color;
+
+  thead {
+    background: $bg-color;
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: $muted-text-color;
+      text-transform: uppercase;
+      border-bottom: 2px solid $border-color-divider;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid $border-color-divider;
+      transition: background 0.2s;
+
+      &:hover {
+        background: $hover-bg-light;
+      }
+
+      td {
+        padding: 1rem;
+        font-size: 0.9rem;
+        color: $text-color;
+      }
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    color: $muted-text-color;
+    font-style: italic;
+    padding: 2rem;
+  }
+}
+
+.financial-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.financial-card {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-color-dark 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+
+  h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.9;
+  }
+
+  .financial-value {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+
+    &.positive {
+      color: $success-color-light;
+    }
+  }
+}
+
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  color: $muted-text-color;
+  font-size: 1.1rem;
+
+  i {
+    margin-right: 0.5rem;
+    font-size: 1.5rem;
+  }
+}
+
+// Responsive
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .header-actions {
+      width: 100%;
+      flex-direction: column;
+
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  .period-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs-header {
+    .tab-button {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .tabs-content {
+    padding: 1rem;
+  }
+
+  .chart-card {
+    padding: 1rem;
+
+    canvas {
+      max-height: 300px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stats-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .financial-summary {
+    grid-template-columns: 1fr;
+  }
+}

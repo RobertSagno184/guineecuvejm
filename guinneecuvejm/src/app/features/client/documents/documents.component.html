@@ -1,0 +1,231 @@
+<div class="documents-page">
+  <div class="documents-header">
+    <div>
+      <h1>Mes Documents</h1>
+      <p class="subtitle">Factures et devis à télécharger</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Chargement de vos documents...</p>
+  </div>
+
+  <!-- Documents Content -->
+  <div class="documents-content" *ngIf="!isLoading()">
+    <!-- Tabs -->
+    <div class="documents-tabs">
+      <button
+        class="tab-btn"
+        [class.active]="activeTab() === 'invoices'"
+        (click)="setActiveTab('invoices')"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Factures
+        <span class="badge" *ngIf="documents().length > 0">{{ documents().length }}</span>
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab() === 'quotes'"
+        (click)="setActiveTab('quotes')"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        Devis
+        <span class="badge" *ngIf="pendingQuotes().length > 0">{{ pendingQuotes().length }}</span>
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section" *ngIf="activeTab() === 'invoices'">
+      <div class="filter-buttons">
+        <button
+          class="filter-btn"
+          [class.active]="filterStatus() === 'all'"
+          (click)="setFilterStatus('all')"
+        >
+          Tous
+        </button>
+        <button
+          class="filter-btn"
+          [class.active]="filterStatus() === 'pending'"
+          (click)="setFilterStatus('pending')"
+        >
+          En attente
+        </button>
+        <button
+          class="filter-btn"
+          [class.active]="filterStatus() === 'confirmed'"
+          (click)="setFilterStatus('confirmed')"
+        >
+          Confirmées
+        </button>
+        <button
+          class="filter-btn"
+          [class.active]="filterStatus() === 'processing'"
+          (click)="setFilterStatus('processing')"
+        >
+          En préparation
+        </button>
+        <button
+          class="filter-btn"
+          [class.active]="filterStatus() === 'shipped'"
+          (click)="setFilterStatus('shipped')"
+        >
+          Expédiées
+        </button>
+        <button
+          class="filter-btn"
+          [class.active]="filterStatus() === 'delivered'"
+          (click)="setFilterStatus('delivered')"
+        >
+          Livrées
+        </button>
+      </div>
+    </div>
+
+    <!-- Documents List -->
+    <div class="documents-list">
+      <!-- Invoices Tab -->
+      <div class="tab-panel" *ngIf="activeTab() === 'invoices'">
+        <div class="documents-table" *ngIf="getFilteredDocuments().length > 0">
+          <div class="table-header">
+            <div class="col-number">Numéro</div>
+            <div class="col-date">Date</div>
+            <div class="col-amount">Montant</div>
+            <div class="col-status">Statut</div>
+            <div class="col-actions">Actions</div>
+          </div>
+          <div class="table-body">
+            <div class="table-row" *ngFor="let doc of getFilteredDocuments()">
+              <div class="col-number">
+                <strong>{{ doc.orderNumber }}</strong>
+              </div>
+              <div class="col-date">
+                {{ doc.date | date:'shortDate':'fr-FR' }}
+              </div>
+              <div class="col-amount">
+                <strong>{{ doc.amount | price }}</strong>
+              </div>
+              <div class="col-status">
+                <span class="status-badge" [ngClass]="getStatusClass(doc.status)">
+                  {{ getStatusLabel(doc.status) }}
+                </span>
+              </div>
+              <div class="col-actions">
+                <button
+                  class="btn-download"
+                  (click)="downloadInvoice(doc)"
+                  title="Télécharger la facture"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Télécharger
+                </button>
+                <a
+                  [routerLink]="['/client/commandes', doc.id]"
+                  class="btn-view"
+                  title="Voir les détails"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="getFilteredDocuments().length === 0">
+          <div class="empty-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <h2>Aucune facture trouvée</h2>
+          <p *ngIf="filterStatus() === 'all'">Vous n'avez pas encore de factures.</p>
+          <p *ngIf="filterStatus() !== 'all'">Aucune facture avec ce statut.</p>
+        </div>
+      </div>
+
+      <!-- Quotes Tab -->
+      <div class="tab-panel" *ngIf="activeTab() === 'quotes'">
+        <div class="empty-state" *ngIf="pendingQuotes().length === 0">
+          <div class="empty-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          </div>
+          <h2>Aucun devis en attente</h2>
+          <p>Vous n'avez pas encore de devis en attente.</p>
+          <a routerLink="/client/catalogue" class="btn-primary">
+            Parcourir le catalogue
+          </a>
+        </div>
+
+        <div class="documents-table" *ngIf="pendingQuotes().length > 0">
+          <!-- Similar structure to invoices -->
+          <div class="table-header">
+            <div class="col-number">Référence</div>
+            <div class="col-date">Date</div>
+            <div class="col-amount">Montant estimé</div>
+            <div class="col-status">Statut</div>
+            <div class="col-actions">Actions</div>
+          </div>
+          <div class="table-body">
+            <div class="table-row" *ngFor="let quote of pendingQuotes()">
+              <div class="col-number">
+                <strong>{{ quote.orderNumber || quote.id }}</strong>
+              </div>
+              <div class="col-date">
+                {{ quote.date | date:'shortDate':'fr-FR' }}
+              </div>
+              <div class="col-amount">
+                <strong>{{ quote.amount | price }}</strong>
+              </div>
+              <div class="col-status">
+                <span class="status-badge status-pending">
+                  {{ getStatusLabel(quote.status) }}
+                </span>
+              </div>
+              <div class="col-actions">
+                <button
+                  class="btn-download"
+                  (click)="downloadInvoice(quote)"
+                  title="Télécharger le devis"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Télécharger
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

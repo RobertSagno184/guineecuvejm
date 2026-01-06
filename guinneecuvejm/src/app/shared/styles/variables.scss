@@ -1,30 +1,62 @@
+// ============================================
+// CHARTE GRAPHIQUE - Guinée Cuve JM
+// Secteur industriel/eau
+// ============================================
+// NOTE: Ce fichier est une copie de src/assets/styles/_variables.scss
+// Pour maintenir la cohérence, utilisez toujours src/assets/styles/_variables.scss
+
 // Couleurs principales
-$primary-color: #0b84ff; // bleu eau principal
-$primary-color-hover: #0a6fd4; // bleu eau au survol
-$secondary-color: #00b894; // accent succès
-$accent-color: #ffb347; // accent orange pour call-to-action
-$danger-color: #e74c3c;
+$primary-color: #1e88e5; // Bleu - confiance, eau, professionnel
+$primary-color-hover: #1976d2; // Bleu au survol (assombri)
+$primary-color-light: #64b5f6; // Bleu clair
+$primary-color-dark: #1565c0; // Bleu foncé
+
+$secondary-color: #00897b; // Vert - écologie, durabilité, plastique
+$secondary-color-hover: #00695c; // Vert au survol (assombri)
+$secondary-color-light: #4db6ac; // Vert clair
+$secondary-color-dark: #004d40; // Vert foncé
+
+$accent-color: #ff9800; // Orange - énergie, action, industrie
+$accent-color-hover: #f57c00; // Orange au survol (assombri)
+$accent-color-light: #ffb74d; // Orange clair
+$accent-color-dark: #e65100; // Orange foncé
 
 // Couleurs de fond
-$bg-color: #f5f8fb;
-$bg-color-gradient-end: #e8f0f5;
-$surface-color: #ffffff;
+$bg-color: #f8f9fa; // NEUTRE CLAIR - Fond principal
+$bg-color-gradient-end: #e9ecef; // Fond dégradé
+$surface-color: #ffffff; // Fond surface (cartes, modals)
 
 // Couleurs de bordure
-$border-color: #dde3ec;
-$border-color-light: #d1d5db;
-$border-color-divider: #e5e7eb;
+$border-color: #dee2e6; // Bordure standard
+$border-color-light: #e9ecef; // Bordure légère
+$border-color-divider: #ced4da; // Diviseur
 
 // Couleurs de texte
-$text-color: #1f2933;
-$text-color-secondary: #374151;
-$muted-text-color: #6b7280;
+$text-color: #37474f; // NEUTRE FONCÉ - Texte principal
+$text-color-secondary: #546e7a; // Texte secondaire
+$muted-text-color: #78909c; // Texte atténué
 
 // Couleurs d'état
-$error-color: #e74c3c;
-$focus-color: rgba(11, 132, 255, 0.1);
-$hover-bg-light: #f3f4f6;
-$hover-bg-primary: #f0f7ff;
+$success-color: #4caf50; // SUCCÈS - Stock OK
+$success-color-hover: #43a047; // Succès au survol
+$success-color-light: #81c784; // Succès clair
+
+$alert-color: #ffb300; // ALERTE - Stock faible
+$alert-color-hover: #ffa000; // Alerte au survol
+$alert-color-light: #ffca28; // Alerte clair
+$alert-color-dark: #f57c00; // Alerte foncé
+
+$error-color: #e53935; // ERREUR - Stock épuisé
+$error-color-hover: #d32f2f; // Erreur au survol
+$error-color-light: #ef5350; // Erreur clair
+$error-color-dark: #c62828; // Erreur foncé
+
+$danger-color: $error-color; // Alias pour compatibilité
+
+// États interactifs
+$focus-color: rgba(30, 136, 229, 0.1); // Focus avec couleur primaire
+$hover-bg-light: #f1f3f5; // Fond hover léger
+$hover-bg-primary: rgba(30, 136, 229, 0.08); // Fond hover primaire
 
 // Typographie
 $font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

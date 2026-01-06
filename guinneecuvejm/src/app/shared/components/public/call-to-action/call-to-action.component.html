@@ -1,0 +1,19 @@
+<section class="cta-section" [class]="'cta-' + variant()">
+  <div class="cta-container">
+    <h2 class="cta-title">{{ title() }}</h2>
+    <p class="cta-description" *ngIf="description()">{{ description() }}</p>
+    <div class="cta-actions">
+      <a [routerLink]="primaryLink()" class="cta-button cta-primary">
+        {{ primaryText() }}
+      </a>
+      <a 
+        *ngIf="secondaryText() && secondaryLink()"
+        [routerLink]="secondaryLink()!" 
+        class="cta-button cta-secondary"
+      >
+        {{ secondaryText() }}
+      </a>
+    </div>
+  </div>
+</section>
+
